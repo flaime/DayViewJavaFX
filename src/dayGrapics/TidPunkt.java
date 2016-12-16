@@ -17,10 +17,10 @@ public class TidPunkt {
 	
 	@Override
 	public String toString() {
-		return fixaTillMinuter(timme)+":"+fixaTillMinuter(minut);
+		return formaterarTimmeOchMinut(timme)+":"+formaterarTimmeOchMinut(minut);
 	}
 	
-	private String fixaTillMinuter(int minut){
+	private String formaterarTimmeOchMinut(int minut){
 		if((minut+"").length()==1)
 			return "0"+minut;
 		else

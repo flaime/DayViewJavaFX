@@ -2,27 +2,15 @@ package dayGrapics;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
-import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.input.ClipboardContent;
@@ -39,7 +27,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -53,6 +40,11 @@ public class CalenderBuilderContainer{
 		timmVy, minutVy, dagVy
 	}
 	
+	
+/**
+ * är som standard minut vy men ändras här till antingen minut, timme eller dags vy	
+ * @param vy
+ */
 	private void setVy(Vy vy){
 		vyn = vy;
 	}
@@ -68,10 +60,6 @@ public class CalenderBuilderContainer{
 	
 	
 	private ArrayList<Text> allaMinuter = new ArrayList<>();
-	
-	// final Text source = new Text(50, 100, "DRAG ME");
-	// final Text target = new Text(300, 100, "DROP HERE");
-
 	
 	public CalenderBuilderContainer(GridPane grid) {
 		gridPane = grid;
@@ -98,10 +86,6 @@ public class CalenderBuilderContainer{
 			e.printStackTrace();
 		}
 
-//		GridPane gridpane = new GridPane();
-		
-	     
-	     
 		ritaGrundKalender();
 		calenderHändelser.add(new ArrayList<CalenderEvent>());
 
@@ -110,14 +94,14 @@ public class CalenderBuilderContainer{
 	         gridPane.getRowConstraints().add(row);
 	     }
 		
-		addEvent(new TidPunkt(0, 30), new TidPunkt(0, 35), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas");
-		addEvent(new TidPunkt(0, 32), new TidPunkt(0, 37), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas");
-		addEvent(new TidPunkt(0, 35), new TidPunkt(0, 40), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas");
-		addEvent(new TidPunkt(0, 37), new TidPunkt(0, 42), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas");
-		addEvent(new TidPunkt(0, 39), new TidPunkt(0, 50), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas");
-		addEvent(new TidPunkt(0, 40), new TidPunkt(0, 53), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas");
-		addEvent(new TidPunkt(0, 41), new TidPunkt(0, 55), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas");
-		addEvent(new TidPunkt(0, 42), new TidPunkt(1, 05), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas");
+		addEvent(new TidPunkt(0, 30), new TidPunkt(0, 35), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", true);
+		addEvent(new TidPunkt(0, 32), new TidPunkt(0, 37), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", false);
+		addEvent(new TidPunkt(0, 35), new TidPunkt(0, 40), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", false);
+		addEvent(new TidPunkt(0, 37), new TidPunkt(0, 42), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", false);
+		addEvent(new TidPunkt(0, 39), new TidPunkt(0, 50), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", false);
+		addEvent(new TidPunkt(0, 40), new TidPunkt(0, 53), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", true);
+		addEvent(new TidPunkt(0, 41), new TidPunkt(0, 55), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", true);
+		addEvent(new TidPunkt(0, 42), new TidPunkt(1, 05), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", true);
 //		addEvent(new TidPunkt(0, 35), new TidPunkt(0, 45), "dagens andra lopp ", "ja en heäldese men som inte har så mycket texti sig");
 //		addEvent(new TidPunkt(0, 35), new TidPunkt(0, 45), "dagens andra lopp ", "ja en heäldese men som inte har så mycket texti sig");
 //		addEvent(new TidPunkt(0, 37), new TidPunkt(0, 56), "Lopp nummer tre för dagen", "ja en heäldese men som inte har så mycket texti sig");
@@ -129,104 +113,6 @@ public class CalenderBuilderContainer{
 //		addEvent(new TidPunkt(3, 31), new TidPunkt(3, 32), "mellanmål mums", "ja en heäldese men som inte har så mycket texti sig");
 	
 	}
-
-	
-//	private void initialize() {
-//		
-//
-//		// sätter dragblörjan saker
-//		source.setOnDragDetected(new EventHandler<MouseEvent>() {
-//			public void handle(MouseEvent event) {
-//				/* drag was detected, start a drag-and-drop gesture */
-//				/* allow any transfer mode */
-//				Dragboard db = source.startDragAndDrop(TransferMode.ANY);
-//
-//				/* Put a string on a dragboard */
-//				ClipboardContent content = new ClipboardContent();
-//				content.putString(source.getText());
-//				db.setContent(content);
-//
-//				event.consume();
-//			}
-//		});
-//
-//		// saker för det som det ska kopieras til
-//		target.setOnDragOver(new EventHandler<DragEvent>() {
-//			public void handle(DragEvent event) {
-//				/* data is dragged over the target */
-//				/*
-//				 * accept it only if it is not dragged from the same node and if
-//				 * it has a string data
-//				 */
-//				if (event.getGestureSource() != target && event.getDragboard().hasString()) {
-//					/*
-//					 * allow for both copying and moving, whatever user chooses
-//					 */
-//					event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-//				}
-//
-//				event.consume();
-//			}
-//		});
-//
-//		target.setOnDragEntered(new EventHandler<DragEvent>() {
-//			public void handle(DragEvent event) {
-//				/* the drag-and-drop gesture entered the target */
-//				/* show to the user that it is an actual gesture target */
-//				if (event.getGestureSource() != target && event.getDragboard().hasString()) {
-//					target.setFill(Color.GREEN);
-//				}
-//
-//				event.consume();
-//			}
-//		});
-//
-//		target.setOnDragExited(new EventHandler<DragEvent>() {
-//			public void handle(DragEvent event) {
-//				/* mouse moved away, remove the graphical cues */
-//				target.setFill(Color.BLACK);
-//
-//				event.consume();
-//			}
-//		});
-//
-//		target.setOnDragDropped(new EventHandler<DragEvent>() {
-//			public void handle(DragEvent event) {
-//				/* data dropped */
-//				/* if there is a string data on dragboard, read it and use it */
-//				Dragboard db = event.getDragboard();
-//				boolean success = false;
-//				if (db.hasString()) {
-//					target.setText(db.getString());
-//					success = true;
-//				}
-//				/*
-//				 * let the source know whether the string was successfully
-//				 * transferred and used
-//				 */
-//				event.setDropCompleted(success);
-//
-//				event.consume();
-//			}
-//		});
-//
-//		source.setOnDragDone(new EventHandler<DragEvent>() {
-//			public void handle(DragEvent event) {
-//				/* the drag and drop gesture ended */
-//				/* if the data was successfully moved, clear it */
-//				if (event.getTransferMode() == TransferMode.MOVE) {
-//					source.setText("");
-//				}
-//				event.consume();
-//			}
-//		});
-//
-//		
-//		
-//		
-//		
-//		
-//	}
 
 	private BorderPane rootLayout;
 	private Stage primaryStage;
@@ -291,7 +177,6 @@ public class CalenderBuilderContainer{
 				    t = addMinutTextEgenskaper(t, minut -1,timme-1);
 					gridPane.add(t, 2, i);
 					
-//					gridPane.add(child, 3, i);
 				}else if(vyn == Vy.timmVy){
 					Text t = new Text();
 					t.setText(fixaTillMinuter(minut++));
@@ -340,8 +225,8 @@ public class CalenderBuilderContainer{
 	public static ArrayList<ScrollPane> retList = new ArrayList<>();
 	
 	
-	public boolean addEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy){
-		CalenderEvent event = new CalenderEvent(från, till, rubrik, boddy);
+	public boolean addEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy, boolean scrollbar){
+		CalenderEvent event = new CalenderEvent(från, till, rubrik, boddy, scrollbar);
 		return addEvent(event);
 	}
 	public boolean addEvent(CalenderEvent event){		
@@ -352,8 +237,6 @@ public class CalenderBuilderContainer{
 		slutRuta += event.getTill().getMinut();
 		int antalRuterTillSlut = slutRuta - startRuta;
 		double maxTillåtnaHeight = minutHöjd*antalRuterTillSlut;
-		
-//		if(finnsEventPåTiden(från,till)==false)
 		
 		int nivå = vilkenNivåSkaEvnetLäggasPå(event);
 		tittaOmNivåFinnsOmInteLäggTill(nivå);
@@ -384,6 +267,10 @@ public class CalenderBuilderContainer{
 		kroppen.add(sep, 1,2);
 		
 		ScrollPane ret = new ScrollPane(kroppen);
+		if(event.isScrollEnabled() == false){
+			ret.setFitToWidth(true);
+			ret.setFitToHeight(true);
+		}
 		ret.setMaxHeight(height);
 		ret.setPrefHeight(height);
 		ret.setMinHeight(height);
@@ -445,9 +332,6 @@ public class CalenderBuilderContainer{
 		int bStart = (b.getFrån().getTimme()* 100) + b.getFrån().getMinut();
 		int bSlut = (b.getTill().getTimme()* 100) + b.getTill().getMinut();
 		
-//		System.out.println("astart = " +aStart + "\naSlut = " + aSlut + "\nbStart = " + bStart + "\nbslut = " + bSlut);
-		
-//		a.start < b.end && b.start < a.end
 		return (aStart < bSlut && bStart < aSlut);
 	}
 	
@@ -459,7 +343,6 @@ public class CalenderBuilderContainer{
 		t.setId(fixaTillMinuter(timme) + ":" + fixaTillMinuter(minut));
 		allaMinuter.add(t);
 		
-//		 System.out.println(t.getId() );//"getid = " +  getId() //+ "\nt.idProperty = " + t.idProperty()
 		t.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		public void handle(MouseEvent event) {
 			markerade.forEach(sak -> sak.setFill(Color.BLACK));
@@ -629,10 +512,7 @@ public class CalenderBuilderContainer{
 		
 		t.setOnDragExited(new EventHandler<DragEvent>() {
 			public void handle(DragEvent event) {
-				/* mouse moved away, remove the graphical cues */
-//				t.setFill(Color.BLACK);
 				allaMinuter.forEach(sak -> sak.setFill(Color.BLACK));
-//				markerade.forEach(sak -> sak.setFill(Color.BLACK));
 				harLämnat = true;
 				
 				event.consume();
@@ -727,14 +607,9 @@ public class CalenderBuilderContainer{
 
 
 	public void getMarkeradeMinuter() {
-//		markerade.forEach(x -> System.out.println(x.getId()));
 		for(Text t: markerade)
 			System.out.println(t.getId());
 		System.out.println("-------" + markerade.size());
 //		return new CalenderEvent(, till, rubrik, boddy)
 	}
 }
-
-//System.out.println("till.getTimme = " + till.getTimme() + "\ntill.getMinut = " + till.getMinut());
-//System.out.println("från: " + från +"\nTill: " + till);
-//System.out.println("slutruta = "  + slutRuta + " startuta = " + startRuta);

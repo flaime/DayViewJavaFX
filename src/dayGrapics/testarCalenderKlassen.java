@@ -30,30 +30,6 @@ public class testarCalenderKlassen extends Application {
 //	}
 	CalenderBuilderContainer cbc;
     public void start(Stage stage) {
-//        Circle circ = new Circle(40, 40, 30);
-//        Group root = new Group(circ);
-//    	GridPane  gridpane = new GridPane();
-//    	ScrollPane sp = new ScrollPane(gridpane);
-//    	
-//    	AnchorPane root = new AnchorPane();
-//    	AnchorPane.setTopAnchor(sp, 0.0);
-//    	AnchorPane.setLeftAnchor(sp, 0.0);
-//    	AnchorPane.setRightAnchor(sp, 0.0);
-//    	AnchorPane.setBottomAnchor(sp, -20.0);
-//    	
-//    	Button knapp = new Button("längst ner knappt");
-//    	AnchorPane.setTopAnchor(knapp, 30.0);
-//    	AnchorPane.setLeftAnchor(knapp, 0.0);
-//    	AnchorPane.setRightAnchor(knapp, 0.0);
-//    	AnchorPane.setBottomAnchor(knapp, 0.0);
-//    	
-//    	
-    	
-    	
-    	
-    	
-    	
-    	
 
     	GridPane  r1 = new GridPane();
 //    	r1.setFill(Color.LIGHTGRAY);
@@ -68,17 +44,11 @@ public class testarCalenderKlassen extends Application {
       		  cbc.getMarkeradeMinuter();
             }
         });
-//    	r2.setOnAction((event) -> {
-//    		  System.out.println("Button clicked");
-//    		  cbc.removeEvent(cbc.getAllEvent().get(0));
-//    		  cbc.removeEvent(cbc.getAllEvent().get(0));
-//    		  System.out.println("mer klar");
-//    	});
     	Button r3 = new Button("lägg till");
     	r3.setOnAction((event) -> {
     		  System.out.println("Button clicked");
-    		  cbc.addEvent(new TidPunkt(0, 10), new TidPunkt(00, 20), "ja från annat ställe", "lite längre text här\nNyrad\nhej\nkalas\nhkalas");
-    		  cbc.addEvent(new TidPunkt(0, 20), new TidPunkt(00, 30), "ja från annat ställe", "lite längre text här\nNyrad\nhej\nkalas\nhkalas");
+    		  cbc.addEvent(new TidPunkt(0, 10), new TidPunkt(00, 20), "ja från annat ställe", "lite längre text här\nNyrad\nhej\nkalas\nhkalas", false);
+    		  cbc.addEvent(new TidPunkt(0, 20), new TidPunkt(00, 30), "ja från annat ställe", "lite längre text här\nNyrad\nhej\nkalas\nhkalas", false);
     		  System.out.println("mer klar");
     		  
     		   cbc.getGridpane().forEach(sak -> System.out.println("-"+sak.getId()));
@@ -87,37 +57,28 @@ public class testarCalenderKlassen extends Application {
     	
     	
     	
-//    	Rectangle r2 = new Rectangle(200,400);
-//    	r2.setFill(Color.DARKGRAY);
     	AnchorPane anchor = new AnchorPane(r1, r2, r3);
     	
     	AnchorPane.setTopAnchor(r1, 0.0);
     	AnchorPane.setLeftAnchor(r1, 0.0);
     	
     	AnchorPane.setTopAnchor(r2, 00.0);
-//    	AnchorPane.setRightAnchor(r2, 00.0);
     	AnchorPane.setLeftAnchor(r2, 20.0);
     	
     	AnchorPane.setTopAnchor(r3, 00.0);
     	AnchorPane.setLeftAnchor(r3, 100.0);
-//    	AnchorPane.setRightAnchor(r3, 500.0);
-//    	AnchorPane.setBottomAnchor(r3, 0.0);
     	
     	
     	Group roott = new Group(anchor);
         Scene scene = new Scene(roott, 400, 500);
-//        scene.addEventFilter(MouseEvent.ANY, e -> System.out.println( e));
         
         cbc = new CalenderBuilderContainer(r1);
         
         stage.setTitle("My JavaFX Application");
         stage.setScene(scene);
         stage.show();
-        cbc.addEvent(new TidPunkt(0, 10), new TidPunkt(00, 20), "ja från annat ställe", "lite längre text här\nNyrad\nhej\nkalas\nhkalas");
-//        cbc.removeEvent(cbc.getAllEvent().get(0));
-//        cbc.removeEvent(cbc.getAllEvent().get(2));
-//        cbc.removeEvent(cbc.getAllEvent().get(3));
-//        cbc.removeEvent(cbc.getAllEvent().get(4));
+        cbc.addEvent(new TidPunkt(0, 10), new TidPunkt(00, 20), "ja från annat ställe", "lite längre text här\nNyrad\nhej\nkalas\nhkalas", false);
+//        cbc.removeEvent(cbc.getAllEvent().get(3)); //varör går detta så mycket snabbare TODO?
     }
     
     public static void main(String[] args) {
@@ -128,17 +89,3 @@ public class testarCalenderKlassen extends Application {
 		Application.launch(args);
 	}
 }
-
-
-/*
-root.setTopAnchor(sp, 0.0);
-root.setLeftAnchor(sp, 0.0);
-root.setRightAnchor(sp, 0.0);
-root.setBottomAnchor(sp, -20.0);
-
-Button knapp = new Button("längst ner knappt");
-AnchorPane.setTopAnchor(knapp, 30.0);
-root.setLeftAnchor(knapp, 0.0);
-root.setRightAnchor(knapp, 0.0);
-root.setBottomAnchor(knapp, 0.0);
-*/

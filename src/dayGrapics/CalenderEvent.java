@@ -6,14 +6,16 @@ public class CalenderEvent {
 	TidPunkt till;
 	String rubrik;
 	String boddy;
+	private boolean scrollEnabled = true;
 	private static int nextId = 1;
 	private final int dennasId;
 	
-	public CalenderEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy) {
+	public CalenderEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy, boolean scrollEnabled) {
 		this.boddy = boddy;
 		this.rubrik = rubrik;
 		this.från = från;
 		this.till = till;
+		this.scrollEnabled = scrollEnabled;
 		dennasId = nextId++;
 		
 	}
@@ -47,6 +49,12 @@ public class CalenderEvent {
 	}
 	public int getId() {
 		return dennasId;
+	}
+	public boolean isScrollEnabled() {
+		return scrollEnabled;
+	}
+	public void setScrollEnabled(boolean scrollEnabled) {
+		this.scrollEnabled = scrollEnabled;
 	}
 	
 }
