@@ -1,17 +1,23 @@
 package dayGrapics;
 
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
+import org.omg.CORBA.Environment;
+
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Separator;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
@@ -30,6 +36,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sun.net.www.content.text.PlainTextInputStream;
 
 public class CalenderBuilderContainer{
 
@@ -93,29 +100,7 @@ public class CalenderBuilderContainer{
 	         RowConstraints row = new RowConstraints(minutHöjd);
 	         gridPane.getRowConstraints().add(row);
 	     }
-		
-		addEvent(new TidPunkt(0, 30), new TidPunkt(0, 35), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", true);
-		addEvent(new TidPunkt(0, 32), new TidPunkt(0, 37), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", false);
-		addEvent(new TidPunkt(0, 35), new TidPunkt(0, 40), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", false);
-		addEvent(new TidPunkt(0, 37), new TidPunkt(0, 42), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", false);
-		addEvent(new TidPunkt(0, 39), new TidPunkt(0, 50), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", false);
-		addEvent(new TidPunkt(0, 40), new TidPunkt(0, 53), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", true);
-		addEvent(new TidPunkt(0, 41), new TidPunkt(0, 55), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", true);
-		addEvent(new TidPunkt(0, 42), new TidPunkt(1, 05), "Veckans försla lopp", "ja en heäldese men som inte har så mycket texti sig\nadsfa\nasdfaf\nasdfa\nhej\nkalas", true);
-//		addEvent(new TidPunkt(0, 35), new TidPunkt(0, 45), "dagens andra lopp ", "ja en heäldese men som inte har så mycket texti sig");
-//		addEvent(new TidPunkt(0, 35), new TidPunkt(0, 45), "dagens andra lopp ", "ja en heäldese men som inte har så mycket texti sig");
-//		addEvent(new TidPunkt(0, 37), new TidPunkt(0, 56), "Lopp nummer tre för dagen", "ja en heäldese men som inte har så mycket texti sig");
-//		addEvent(new TidPunkt(0, 56), new TidPunkt(1, 15), "ja ett lopp", "ja en heäldese men som inte har så mycket texti sig");
-//		addEvent(new TidPunkt(1, 15), new TidPunkt(1, 30), "en händelse", "ja en heäldese men som inte har så mycket texti sig");
-//		addEvent(new TidPunkt(1, 32), new TidPunkt(2, 10), "ja snart lunch?", "ja en heäldese men som inte har så mycket texti sig");
-//		addEvent(new TidPunkt(2, 10), new TidPunkt(2, 30), "in lunch än?", "ja en heäldese men som inte har så mycket texti sig");
-//		addEvent(new TidPunkt(2, 30), new TidPunkt(3, 00), "mellanmål mums", "ja en heäldese men som inte har så mycket texti sig");
-//		addEvent(new TidPunkt(3, 31), new TidPunkt(3, 32), "mellanmål mums", "ja en heäldese men som inte har så mycket texti sig");
-	
 	}
-
-	private BorderPane rootLayout;
-	private Stage primaryStage;
 
 	private void ritaGrundKalender() {
 		/**
@@ -222,32 +207,113 @@ public class CalenderBuilderContainer{
 		else
 			return minut+"";
 	}
-	public static ArrayList<ScrollPane> retList = new ArrayList<>();
 	
 	
 	public boolean addEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy, boolean scrollbar){
 		CalenderEvent event = new CalenderEvent(från, till, rubrik, boddy, scrollbar);
 		return addEvent(event);
 	}
-	public boolean addEvent(CalenderEvent event){		
+	int gånger = 0;
+	public boolean addEvent(CalenderEvent event){	
 		//lite fakta om var den ska sitta någonstans
-		int startRuta = event.getFrån().getTimme()*60;
-		startRuta += event.getFrån().getMinut();
-		int slutRuta = event.getTill().getTimme()*60;
-		slutRuta += event.getTill().getMinut();
+		int startRuta = getStartrutaFörEvent(event);
+		int slutRuta = getSlutrutaFörEvent(event);
 		int antalRuterTillSlut = slutRuta - startRuta;
-		double maxTillåtnaHeight = minutHöjd*antalRuterTillSlut;
+		double maxTillåtnaHeight = maxTillåtanaHöjdPåEvent(event);
 		
 		int nivå = vilkenNivåSkaEvnetLäggasPå(event);
 		tittaOmNivåFinnsOmInteLäggTill(nivå);
 		calenderHändelser.get(nivå).add(event);//för  att kunna tillta var de finns till senare och ta ut hämta ut händelser
 		ScrollPane ret = createCalenderEvent(event, maxTillåtnaHeight);
 		gridPane.add(ret, 3+nivå, startRuta, 1, antalRuterTillSlut);
-		retList.add(ret);
 		
+		
+
+		fixaTillbkakaIckaKrokande();
+		fixaAllaIckeKrokande();
 		return true;
 	}
 	
+	private ArrayList<CalenderEvent> allaFixadeUtdragna = new ArrayList<>();
+	public void fixaAllaIckeKrokande(){
+		for(CalenderEvent event :calenderHändelser.get(0)){
+			boolean krokar = false;
+			for(int i =1; i < calenderHändelser.size();i++){//ArrayList<CalenderEvent> list : calenderHändelser){
+				for(CalenderEvent gämföraMed : calenderHändelser.get(i)){
+					if(överlapparDessa(event, gämföraMed)){
+						krokar = true;
+					}
+				}
+			}
+			if(krokar == false){
+				ritaUtPåHela(event);
+				allaFixadeUtdragna.add(event);
+			}
+		}
+	}
+	public void fixaTillbkakaIckaKrokande(){
+		
+			for(CalenderEvent eventsak: calenderHändelser.get(0)){
+				ritaUtPåSinPlatts(eventsak);
+			}
+	}
+	
+	public ObservableList<Node> getChildren(){
+		return gridPane.getChildren();
+	}
+	
+	public void ritaUtPåSinPlatts(CalenderEvent event){
+		final String eventId = event.getId()+"";
+		Node hittad = null;
+		for(Node ärPå: gridPane.getChildren()){
+			if(ärPå.getId() != null)
+				if(ärPå.getId().equalsIgnoreCase(eventId))
+					hittad = ärPå;
+		}
+		gridPane.add(createCalenderEvent(event, maxTillåtanaHöjdPåEvent(event)), 3/*+vilkenNivåSkaEvnetLäggasPå(event)*/, getStartrutaFörEvent(event),1, getSlutrutaFörEvent(event)-getStartrutaFörEvent(event));
+		gridPane.getChildren().remove(hittad);
+	}
+	
+	public void ritaUtPåHela(CalenderEvent event){
+		final String eventId = event.getId()+"";
+//		gridPane.getChildren().stream()
+//			.filter(x-> x.getId() != null)
+//			.filter(x->x.getId().equalsIgnoreCase(eventId))
+//			.forEach(x->{
+//				
+//			});
+		Node hittad = null;
+		for(Node ärPå: gridPane.getChildren()){
+			if(ärPå.getId() != null)
+				if(ärPå.getId().equalsIgnoreCase(eventId))
+					hittad = ärPå;
+		}
+		gridPane.getChildren().remove(hittad);
+		gridPane.add(createCalenderEvent(event, maxTillåtanaHöjdPåEvent(event)), 3, getStartrutaFörEvent(event),calenderHändelser.size()+3, getSlutrutaFörEvent(event)-getStartrutaFörEvent(event));
+	}
+	
+	
+
+	private double maxTillåtanaHöjdPåEvent(CalenderEvent event){
+		int antalRuterTillSlut = getSlutrutaFörEvent(event) - getStartrutaFörEvent(event);
+		return minutHöjd*antalRuterTillSlut;
+	}
+
+	private int getSlutrutaFörEvent(CalenderEvent event) {
+		int slutRuta = event.getTill().getTimme()*60;
+		slutRuta += event.getTill().getMinut();
+		return slutRuta;
+	}
+
+	private int getStartrutaFörEvent(CalenderEvent event) {
+		int startRuta = event.getFrån().getTimme()*60;
+		startRuta += event.getFrån().getMinut();
+		return startRuta;
+	}
+	
+
+
+
 
 	private ScrollPane createCalenderEvent(CalenderEvent event,double height){ //String rubriken, String boddy, double height){
 		
@@ -270,6 +336,9 @@ public class CalenderBuilderContainer{
 		if(event.isScrollEnabled() == false){
 			ret.setFitToWidth(true);
 			ret.setFitToHeight(true);
+			ret.setHbarPolicy(ScrollBarPolicy.NEVER);
+			ret.setVbarPolicy(ScrollBarPolicy.NEVER);
+//			System.out.println("-----------------------------------");
 		}
 		ret.setMaxHeight(height);
 		ret.setPrefHeight(height);
@@ -521,9 +590,6 @@ public class CalenderBuilderContainer{
 
 		return t;
 	}
-	
-	
-
 
 	public ArrayList<CalenderEvent> getAllEvent() {
 		ArrayList<CalenderEvent> ret = new ArrayList<>();
@@ -535,7 +601,7 @@ public class CalenderBuilderContainer{
 		return ret;
 	}
 
-	boolean  svar = false;
+	private boolean  svar = false;
 	public boolean removeEvent(CalenderEvent calenderEvent) {
 
 		svar = false;
@@ -562,7 +628,6 @@ public class CalenderBuilderContainer{
 		for(CalenderEvent ev : allEvents)
 			addEvent(ev);
 
-		
 		markeradeSparade.forEach(mp -> {
 			allaMinuter.stream()
 			.filter(am -> am.getId().equalsIgnoreCase(mp))
@@ -571,7 +636,6 @@ public class CalenderBuilderContainer{
 				});
 			});
 		
-		
 		markerade.forEach(sak -> sak.setFill(Color.GREEN));
 		System.out.println("tid för lägga tillbkaka gamla event = " + (System.currentTimeMillis() - time));
 		gridPane.requestLayout();
@@ -579,7 +643,6 @@ public class CalenderBuilderContainer{
 		return svar;
 		
 	}
-
 
 	private void repaintAll() {
 		ritaGrundKalender();
@@ -592,7 +655,6 @@ public class CalenderBuilderContainer{
 		
 	}
 
-
 	private void clearAll() {
 		calenderHändelser.clear();
 		gridPane.getChildren().clear();
@@ -600,11 +662,9 @@ public class CalenderBuilderContainer{
 		markerade.clear();
 	}
 
-
 	public ArrayList<Text> getGridpane() {//TODO ta bort denna metod bör inte finnas!!!
 		return allaMinuter;
 	}
-
 
 	public void getMarkeradeMinuter() {
 		for(Text t: markerade)
