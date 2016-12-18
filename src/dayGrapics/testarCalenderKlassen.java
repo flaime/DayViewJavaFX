@@ -103,9 +103,9 @@ public class testarCalenderKlassen extends Application {
         CalenderEvent ce3 = new CalenderEvent(new TidPunkt(0, 45), new TidPunkt(00, 55), "tre", "lite längre text här\nNyrad\nhej\nkalas\nhkalas", false);
         cbc.addEvent(ce3);
         cbc.addEvent(new TidPunkt(0, 50), new TidPunkt(00, 59), "tre", "lite längre text här\nNyrad\nhej\nkalas\nhkalas", false);
-        cbc.addEvent(new TidPunkt(0, 50), new TidPunkt(00, 55), "tre", "lite längre text här\nNyrad\nhej\nkalas\nhkalas", false);
-        cbc.addEvent(new TidPunkt(0, 55), new TidPunkt(01, 10), "tre", "lite längre text här\nNyrad\nhej\nkalas\nhkalas", false);
-        cbc.addEvent(new TidPunkt(1, 05), new TidPunkt(01, 10), "tre", "lite längre text här\nNyrad\nhej\nkalas\nhkalas", false);
+        cbc.addEvent(new TidPunkt(0, 50), new TidPunkt(00, 55), "tre", "lite längre text här\nNyrad\nhej\nkalas\nhkalas", true);
+        cbc.addEvent(new TidPunkt(0, 55), new TidPunkt(01, 10), "tre", "lite längre text här\nNyrad\nhej\nkalas\nhkalas", true);
+        cbc.addEvent(new TidPunkt(1, 05), new TidPunkt(01, 10), "tre", "lite längre text här\nNyrad\nhej\nkalas\nhkalas", true);
     }
     
     public static void main(String[] args) {

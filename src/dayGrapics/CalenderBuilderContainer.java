@@ -23,7 +23,9 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -224,7 +226,7 @@ public class CalenderBuilderContainer{
 		int nivå = vilkenNivåSkaEvnetLäggasPå(event);
 		tittaOmNivåFinnsOmInteLäggTill(nivå);
 		calenderHändelser.get(nivå).add(event);//för  att kunna tillta var de finns till senare och ta ut hämta ut händelser
-		ScrollPane ret = createCalenderEvent(event, maxTillåtnaHeight);
+		Node ret = createCalenderEvent(event, maxTillåtnaHeight);
 		gridPane.add(ret, 3+nivå, startRuta, 1, antalRuterTillSlut);
 		
 		
@@ -322,6 +324,7 @@ public class CalenderBuilderContainer{
 		StackPane rubrikPane = new StackPane(rubrik);
 		rubrikPane.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
 		
+		
 		Text bodyn = new Text();
 		bodyn.setText(event.getBoddy());
 		
@@ -331,18 +334,27 @@ public class CalenderBuilderContainer{
 		kroppen.add(rubrikPane, 1, 1);
 		kroppen.add(bodyn, 1, 3);
 		kroppen.add(sep, 1,2);
-		
 		ScrollPane ret = new ScrollPane(kroppen);
-		if(event.isScrollEnabled() == false){
-			ret.setFitToWidth(true);
-			ret.setFitToHeight(true);
-			ret.setHbarPolicy(ScrollBarPolicy.NEVER);
-			ret.setVbarPolicy(ScrollBarPolicy.NEVER);
-//			System.out.println("-----------------------------------");
-		}
+
 		ret.setMaxHeight(height);
 		ret.setPrefHeight(height);
 		ret.setMinHeight(height);
+		if(event.isScrollEnabled() == false){
+			ret.setHbarPolicy(ScrollBarPolicy.NEVER);
+			ret.setVbarPolicy(ScrollBarPolicy.NEVER);
+			ret.setFitToWidth(true);
+			ret.setFitToHeight(true);
+			ret.addEventFilter(ScrollEvent.SCROLL,new EventHandler<ScrollEvent>() {
+		        @Override
+		        public void handle(ScrollEvent event) {
+		            if (event.getDeltaX() != 0) {
+		                event.consume();
+		            }
+		        }
+		    });
+
+		}
+		
 		
 		ret.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			 
@@ -359,6 +371,7 @@ public class CalenderBuilderContainer{
 	 
 	      });
 		
+		rubrikPane.prefWidthProperty().bind(ret.widthProperty());
 		ret.setId(event.getId()+"");
 	    return ret;
 		
