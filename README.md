@@ -11,8 +11,10 @@ Some coming features:
 
 ## How to ouse
 Add the Jar file to youre prodjekt or compile the classes:
+```
 /DayViewJavaFX/src/dayGrapics/CalenderBuilderContainer.java
 /DayViewJavaFX/src/dayGrapics/CalenderEvent.java
 /DayViewJavaFX/src/dayGrapics/TidPunkt.java
+```
 
 Then in your JavaFx application add an gridPane (**that is empty**) and add it to the CalenderBuilderContainer constructor and then it is ready to use. And you can create CalenderEvent events and add to the CalenderBuilderContainer that will sort the rest out :)
