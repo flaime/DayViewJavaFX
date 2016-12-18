@@ -57,4 +57,20 @@ public class CalenderEvent {
 		this.scrollEnabled = scrollEnabled;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}else if(((CalenderEvent) obj).getId() == getId())
+			return true;
+
+		
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return getId();
+	}
+	
 }
