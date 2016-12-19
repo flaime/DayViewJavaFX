@@ -23,6 +23,17 @@ Add the Jar file to youre prodjekt or compile the classes:
 
 Then in your JavaFx application add an gridPane (**that is empty**) and add it to the CalenderBuilderContainer constructor and then it is ready to use. And you can create CalenderEvent events and add to the CalenderBuilderContainer that will sort the rest out :)
 
+Example below:
+```
+GridPane  gridPane = new GridPane();
+//adding the gridPane to the XML is missing...
+CalenderBuilderContainer cbc = new CalenderBuilderContainer(gridPane, Vy.dagVy);
+
+CalenderEvent ce1 =  new CalenderEvent(new TidPunkt(9, 15), new TidPunkt(10, 00), "heading here", "The body text here", false); //where the false is optional and stands for scrollable
+cbc.addEvent(ce1);
+```
+And by that we have been creating a calendar with one calendar event that is between 9:15-10:00
+
 #### Example how it can look for the minute view:
 <img src="https://github.com/flaime/DayViewJavaFX/blob/master/readmeFiles/dayView.PNG" width="300">
 #### Example how it can look for the hour view:
