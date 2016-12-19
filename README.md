@@ -1,6 +1,8 @@
 # DayViewJavaFX
 DayViewJavaFX is an project that aims to create an day view (calendar) that is light weight, pure java/javafx, easy to use and **free**!
 
+![Example how it can look for the minute view](https://github.com/flaime/DayViewJavaFX/blob/master/readmeFiles/dayView.PNG)
+
 It can display an day calendar in minute, hour and day view whit the abilities to handle multiple events on the same time. It can also detect marking of minutes in the minute column. 
 
 Some coming features:
