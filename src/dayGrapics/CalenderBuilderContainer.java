@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 import org.omg.CORBA.Environment;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -31,6 +32,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
@@ -70,7 +72,8 @@ public class CalenderBuilderContainer{
 	
 	private ArrayList<Text> allaMinuter = new ArrayList<>();
 	
-	public CalenderBuilderContainer(GridPane grid) {
+	public CalenderBuilderContainer(GridPane grid, Vy vyn) {
+		this.vyn = vyn;
 		gridPane = grid;
 		
 		gridPane.getChildren().clear();//ska förhopnningsvis tömma gripanen helt så man kan börja med en "ren"
@@ -215,6 +218,10 @@ public class CalenderBuilderContainer{
 		CalenderEvent event = new CalenderEvent(från, till, rubrik, boddy, scrollbar);
 		return addEvent(event);
 	}
+	public boolean addEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy) {
+		CalenderEvent event = new CalenderEvent(från, till, rubrik, boddy);
+		return addEvent(event);
+	}
 	int gånger = 0;
 	public boolean addEvent(CalenderEvent event){	
 		//lite fakta om var den ska sitta någonstans
@@ -253,18 +260,14 @@ public class CalenderBuilderContainer{
 			}
 		}
 	}
-	public void fixaTillbkakaIckaKrokande(){
+	private void fixaTillbkakaIckaKrokande(){
 		
 			for(CalenderEvent eventsak: calenderHändelser.get(0)){
 				ritaUtPåSinPlatts(eventsak);
 			}
 	}
 	
-	public ObservableList<Node> getChildren(){
-		return gridPane.getChildren();
-	}
-	
-	public void ritaUtPåSinPlatts(CalenderEvent event){
+	private void ritaUtPåSinPlatts(CalenderEvent event){
 		final String eventId = event.getId()+"";
 		Node hittad = null;
 		for(Node ärPå: gridPane.getChildren()){
@@ -276,7 +279,7 @@ public class CalenderBuilderContainer{
 		gridPane.getChildren().remove(hittad);
 	}
 	
-	public void ritaUtPåHela(CalenderEvent event){
+	private void ritaUtPåHela(CalenderEvent event){
 		final String eventId = event.getId()+"";
 //		gridPane.getChildren().stream()
 //			.filter(x-> x.getId() != null)
@@ -319,14 +322,17 @@ public class CalenderBuilderContainer{
 
 	private ScrollPane createCalenderEvent(CalenderEvent event,double height){ //String rubriken, String boddy, double height){
 		
+		Text tid = new Text();
+		tid.textProperty().bind(event.getFrånTillObservably());//Bindings.createStringBinding(() -> event.getFrånTillObservably()+ " "+event.getRubrik()));//Bindings.concat(event.getFrånTillObservably(), " ",event.getRubrik())); //setText(event.getFrån() + "-" + event.getTill() + "\t" +event.getRubrik());
 		Text rubrik = new Text();
-		rubrik.setText(event.getFrån() + "-" + event.getTill() + "\t" +event.getRubrik());
-		StackPane rubrikPane = new StackPane(rubrik);
+		rubrik.textProperty().bind(event.getRubrikObservably());//Bindings.createStringBinding(() -> event.getFrånTillObservably()+ " "+event.getRubrik()));//Bindings.concat(event.getFrånTillObservably(), " ",event.getRubrik())); //setText(event.getFrån() + "-" + event.getTill() + "\t" +event.getRubrik());
+		HBox toppDel = new HBox(tid,new Text(" "),rubrik);
+		StackPane rubrikPane = new StackPane(toppDel);//rubrik);
 		rubrikPane.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
 		
 		
 		Text bodyn = new Text();
-		bodyn.setText(event.getBoddy());
+		bodyn.textProperty().bind(event.getBoddyObservably());
 		
 		Separator sep = new Separator();
 		GridPane kroppen = new GridPane();
@@ -675,14 +681,11 @@ public class CalenderBuilderContainer{
 		markerade.clear();
 	}
 
-	public ArrayList<Text> getGridpane() {//TODO ta bort denna metod bör inte finnas!!!
-		return allaMinuter;
-	}
-
 	public void getMarkeradeMinuter() {
 		for(Text t: markerade)
 			System.out.println(t.getId());
 		System.out.println("-------" + markerade.size());
 //		return new CalenderEvent(, till, rubrik, boddy)
 	}
+
 }
