@@ -41,7 +41,22 @@ public class CalenderEvent {
 	public TidPunkt getFrån() {
 		return från;
 	}
-	private static Object lås = new Object();
+
+	public void setNyTid(TidPunkt från,TidPunkt till) {
+		this.från = från;
+		this.till = till;
+		CalenderEvent denna = this;
+		Platform.runLater(new Runnable() {
+	        @Override
+	        public void run() {
+	        	FrånTillObservably.set(getFrån()+"-"+getTill());
+	        	for(CalenderBuilderContainer b : uppdateTimeLinks)
+	        		b.uppdateCalenderEventTime(denna);
+	        }
+	      });
+		
+		
+	}
 	public void setFrån(TidPunkt från) {
 		this.från = från;
 		CalenderEvent denna = this;
