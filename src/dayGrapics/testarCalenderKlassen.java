@@ -110,6 +110,10 @@ public class testarCalenderKlassen extends Application {
         cbc.addEvent(new TidPunkt(1, 05), new TidPunkt(01, 10), "tre", "lite längre text här\nNyrad\nhej\nkalas\nhkalas");
         cbc.addEvent(new TidPunkt(10, 45), new TidPunkt(11, 15), "Title goes here", "lite längre text här\nNyrad\nhej\nkalas\nhkalas");
         cbc.addEvent(new TidPunkt(8, 30), new TidPunkt(10, 00), "Title goes here", "lite längre text här\nNyrad\nhej\nkalas\nhkalas");
+        CalenderEvent ce4 =  new CalenderEvent(new TidPunkt(12, 00), new TidPunkt(13, 00), "ett", "lite längre text här\nNyrad\nhej\nkalas\nhkalas", false);
+        cbc.addEvent(ce4);
+        ce4.setFrån(new TidPunkt(11, 0));
+        
     }
     
     public static void main(String[] args) {

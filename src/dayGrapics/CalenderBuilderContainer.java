@@ -225,6 +225,7 @@ public class CalenderBuilderContainer{
 	int gånger = 0;
 	public boolean addEvent(CalenderEvent event){	
 		//lite fakta om var den ska sitta någonstans
+		event.addRefrense(this);
 		int startRuta = getStartrutaFörEvent(event);
 		int slutRuta = getSlutrutaFörEvent(event);
 		int antalRuterTillSlut = slutRuta - startRuta;
@@ -381,6 +382,11 @@ public class CalenderBuilderContainer{
 		ret.setId(event.getId()+"");
 	    return ret;
 		
+	}
+	
+	public void uppdateCalenderEventTime(CalenderEvent calenderEvent) {
+		removeEvent(calenderEvent);
+		addEvent(calenderEvent);
 	}
 
 	
@@ -622,7 +628,7 @@ public class CalenderBuilderContainer{
 
 	private boolean  svar = false;
 	public boolean removeEvent(CalenderEvent calenderEvent) {
-
+		
 		svar = false;
 		
 		long time = System.currentTimeMillis();
@@ -632,8 +638,10 @@ public class CalenderBuilderContainer{
 		ArrayList<String> markeradeSparade =  new ArrayList<>();
 		markerade.forEach(sak -> markeradeSparade.add(sak.getId()));
 		
-		if(allEvents.removeIf(calenderEventPredict))
+		if(allEvents.removeIf(calenderEventPredict)){
 			svar = true;
+			calenderEvent.removeRefrence(this);
+		}
 		
 		System.out.println("tid för sparning = " + (System.currentTimeMillis() - time));
 		
@@ -687,5 +695,7 @@ public class CalenderBuilderContainer{
 		System.out.println("-------" + markerade.size());
 //		return new CalenderEvent(, till, rubrik, boddy)
 	}
+
+
 
 }

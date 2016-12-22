@@ -1,7 +1,10 @@
 package dayGrapics;
 
+import java.util.ArrayList;
+
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 
 public class CalenderEvent {
 
@@ -13,6 +16,7 @@ public class CalenderEvent {
 	private static int nextId = 1;
 	private final int dennasId;
 	private SimpleStringProperty FrånTillObservably = new SimpleStringProperty();
+	private ArrayList<CalenderBuilderContainer> uppdateTimeLinks = new ArrayList<>();
 	
 	public CalenderEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy, boolean scrollEnabled) {
 		this.boddy.setValue(boddy);
@@ -20,7 +24,8 @@ public class CalenderEvent {
 		this.från = från;
 		this.till = till;
 		this.scrollEnabled = scrollEnabled;
-		FrånTillObservably.setValue(getFrån()+"-"+getTill());
+		FrånTillObservably.set(getFrån()+"-"+getTill());
+//		FrånTillObservably.bind(Bindings.concat(från.gettidenBinding(), "-",till.gettidenBinding()));// från.gettidenBinding(),till.gettidenBinding());// setValue(getFrån()+"-"+getTill());
 		dennasId = nextId++;
 		
 	}
@@ -30,22 +35,43 @@ public class CalenderEvent {
 		this.från = från;
 		this.till = till;
 		dennasId = nextId++;
-		FrånTillObservably.setValue(getFrån()+"-"+getTill());
+		FrånTillObservably.set(getFrån()+"-"+getTill());
 		
 	}
 	public TidPunkt getFrån() {
 		return från;
 	}
+	private static Object lås = new Object();
 	public void setFrån(TidPunkt från) {
 		this.från = från;
-		FrånTillObservably.setValue(getFrån()+"-"+getTill());
+		CalenderEvent denna = this;
+		Platform.runLater(new Runnable() {
+	        @Override
+	        public void run() {
+	        	FrånTillObservably.set(getFrån()+"-"+getTill());
+	        	for(CalenderBuilderContainer b : uppdateTimeLinks)
+	        		b.uppdateCalenderEventTime(denna);
+	        }
+	      });
+		
+		
 	}
 	public TidPunkt getTill() {
 		return till;
 	}
 	public void setTill(TidPunkt till) {
 		this.till = till;
-		FrånTillObservably.setValue(getFrån()+"-"+getTill());
+		CalenderEvent denna = this;
+		Platform.runLater(new Runnable() {
+	        @Override
+	        public void run() {
+	        	FrånTillObservably.setValue(getFrån()+"-"+getTill());
+	        	for(CalenderBuilderContainer b : uppdateTimeLinks)
+	        		b.uppdateCalenderEventTime(denna);
+	        }
+	      });
+		
+		uppdateTimeLinks.forEach(x-> x.uppdateCalenderEventTime(this));
 	}
 	public String getRubrik() {
 		return rubrik.getValue();
@@ -67,6 +93,12 @@ public class CalenderEvent {
 	}
 	SimpleStringProperty getRubrikObservably() {
 		return rubrik;
+	}
+	boolean addRefrense(CalenderBuilderContainer cbc){
+		return uppdateTimeLinks.add(cbc);
+	}
+	boolean removeRefrence(CalenderBuilderContainer cbc){
+		return uppdateTimeLinks.remove(cbc);
 	}
 	@Override
 	public String toString() {
