@@ -4,6 +4,8 @@ package dayGrapics;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.omg.CORBA.Environment;
@@ -165,6 +167,10 @@ public class CalenderBuilderContainer{
 				    minutHöjd = Math.ceil(t.getLayoutBounds().getHeight());
 				    
 				    t = addMinutTextEgenskaper(t, minut -1,timme-1);
+				    Pane p = new Pane();
+				    p.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+				    gridPane.add(p,3,i);
+				    
 					gridPane.add(t, 2, i);
 					
 				}else if(vyn == Vy.timmVy){
@@ -430,8 +436,10 @@ public class CalenderBuilderContainer{
 	}
 	
 	private TidPunkt markeradTidStart = null;
+	private TidPunkt markeradTidSlut = null;
 	private ArrayList<Text> markerade = new ArrayList<>();
 	private boolean harLämnat = false;
+	private boolean dropped = true;
 	private Text addMinutTextEgenskaper(Text t, int minut, int timme) {
 		
 		t.setId(fixaTillMinuter(timme) + ":" + fixaTillMinuter(minut));
@@ -440,6 +448,14 @@ public class CalenderBuilderContainer{
 		t.setOnMouseClicked(new EventHandler<MouseEvent>() {
 		public void handle(MouseEvent event) {
 			markerade.forEach(sak -> sak.setFill(Color.BLACK));
+//			if(markeradTidSlut != null && markeradTidStart !=null)
+//				färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK);
+			
+			int minutTid = gridPane.getRowIndex(t);
+			int timme = minutTid/60;
+			int minut = minutTid - (60*timme);
+			markeradTidStart = new TidPunkt(timme, minut);
+			markeradTidSlut = null;
 			markerade.clear();
 			markerade.add(t);
 			
@@ -447,19 +463,27 @@ public class CalenderBuilderContainer{
 			event.consume();
 		}
 	});
-//		
-//		gridPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//			public void handle(MouseEvent event) {
-//				
-//				markeradTid = null;
-//				t.setFill(Color.BLACK);
-//				event.consume();
-//			}
-//		});
+
 		
 		///-----------------------------............--------------
 		t.setOnDragDetected(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
+				if(markeradTidSlut != null && markeradTidStart !=null)
+					färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK);
+				else if(markeradTidStart != null){
+					färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK);
+				}
+//				else if()
+				
+				Platform.runLater(() -> {
+					if(markerade.size() !=0){
+						markerade.forEach((sak)-> sak.setFill(Color.BLACK));
+						markerade.clear();
+					}
+				});
+					
+				markeradTidSlut = null;
+				dropped = false;
 //				if(harLämnat == true){
 					harLämnat = false;
 					markerade.clear();
@@ -516,7 +540,13 @@ public class CalenderBuilderContainer{
 				t.setFill(Color.ORANGE);
 				markerade.add(t);
 				harLämnat = false;
-				markerade.forEach(sak -> sak.setFill(Color.ORANGE));
+//				markerade.forEach(sak -> sak.setFill(Color.ORANGE));
+				int minutTid = gridPane.getRowIndex(t);
+				
+				int timme = minutTid/60;
+				int minut = minutTid - (60*timme);
+				TidPunkt markeradTidSlut = new TidPunkt(timme, minut);
+				färgaMinuter(markeradTidStart,markeradTidSlut,Color.ORANGE);
 //				/* the drag-and-drop gesture entered the target */
 //				/* show to the user that it is an actual gesture target */
 //				if (event.getGestureSource() != t && event.getDragboard().hasString()) {
@@ -525,7 +555,6 @@ public class CalenderBuilderContainer{
 //					 System.out.println("hej" + txt.getText());
 //					 txt.setFill(Color.GREEN);
 //				}
-
 				event.consume();
 			}
 		});
@@ -535,6 +564,7 @@ public class CalenderBuilderContainer{
 		
 		t.setOnDragDropped(new EventHandler<DragEvent>() {
 			public void handle(DragEvent event) {
+				dropped =true;
 				t.setFill(Color.ORANGE);
 				markerade.clear();
 				
@@ -542,46 +572,10 @@ public class CalenderBuilderContainer{
 				
 				int timme = minutTid/60;
 				int minut = minutTid - (60*timme);
-				TidPunkt markeradTidSlut = new TidPunkt(timme, minut);
-				
-				//ändrar plattsen på dem så de i "programet" "ser ut att vara markerade i rätt årnind" då detta ine påvekar funktionalitet men under lättar följande kod
-				if(markeradTidSlut.getTimme()*100 + markeradTidSlut.getMinut() < markeradTidStart.getTimme()*100 + markeradTidStart.getMinut()){
-					TidPunkt temp = markeradTidSlut;
-					markeradTidSlut = markeradTidStart;
-					markeradTidStart = temp;
-				}
-					
-				int startBådaTillsamans = markeradTidStart.getTimme()*100 + markeradTidStart.getMinut();
-				int slutBådaTillsamans = markeradTidSlut.getTimme()*100+markeradTidSlut.getMinut();
-				
-				
-				Platform.runLater(() -> {
-					markerade.forEach((sak)-> sak.setFill(Color.BLACK));
-					markerade.clear();
-					
-//					System.out.println(markerade.size());
-					
-					/*ArrayList<Text >utsorterade =*/  allaMinuter.forEach(/* .stream()*//* parallelStream()*//*.filter(*/(Text pp) -> {if(pp instanceof Text){//getChildrenUnmodifiable()
-						int timmeFörDel = Integer.parseInt(((Text)pp).getId().split(":")[0]);
-						int minutFörDel = Integer.parseInt(((Text)pp).getId().split(":")[1]);
-						int bådaTillsamans = timmeFörDel*100 + minutFörDel;
-						
-//							System.out.println("\ntid: " +((Text)pp).getId()+ "\nbådaTillsamans " +bådaTillsamans + " startBådaTillsamans" + startBådaTillsamans +"\nbådaTillsamans " + bådaTillsamans + " slutBådaTillsamans " + slutBådaTillsamans);
-						if(bådaTillsamans >= startBådaTillsamans && bådaTillsamans <= slutBådaTillsamans ){
-							((Text) pp).setFill(Color.GREEN);
-							System.out.println("kalas");
-							markerade.add(((Text) pp));
-//							return true;
-						}
-						
-					}
-//					return false;
-				/*}).forEach((sak) -> {
-					markerade.add(sak);
-					System.out.println(sak.getId() + " har trixats med och hittats");
-				*/});
-				});
-				
+				TidPunkt markeradTidSlutsak = new TidPunkt(timme, minut);
+				markeradTidSlut = markeradTidSlutsak;
+				färgaMinuter(markeradTidStart,markeradTidSlutsak,Color.GREEN);
+				System.out.println("star:" + markeradTidStart +"\nSlut:"+markeradTidSlut);
 				Dragboard db = event.getDragboard();
 				event.setDropCompleted(true);
 //				/* data dropped */
@@ -606,14 +600,65 @@ public class CalenderBuilderContainer{
 		
 		t.setOnDragExited(new EventHandler<DragEvent>() {
 			public void handle(DragEvent event) {
-				allaMinuter.forEach(sak -> sak.setFill(Color.BLACK));
+//				allaMinuter.forEach(sak -> sak.setFill(Color.BLACK));
 				harLämnat = true;
 				
+				if(dropped == false){
+					int minutTid = gridPane.getRowIndex(t);
+					
+					int timme = minutTid/60;
+					int minut = minutTid - (60*timme);
+					TidPunkt markeradTidSlut = new TidPunkt(timme, minut);
+					färgaMinuter(markeradTidStart,markeradTidSlut,Color.BLACK);
+				}
 				event.consume();
 			}
 		});
 
 		return t;
+	}
+	
+	private void färgaMinuter(TidPunkt markeradTidStart, TidPunkt markeradTidSlut, Color färg) {
+		// ändrar plattsen på dem så de i "programet" "ser ut att vara markerade
+		// i rätt årnind" då detta ine påvekar funktionalitet men under lättar
+		// följande kod
+		if (markeradTidSlut.getTimme() * 100 + markeradTidSlut.getMinut() < markeradTidStart.getTimme() * 100
+				+ markeradTidStart.getMinut()) {
+			TidPunkt temp = markeradTidSlut;
+			markeradTidSlut = markeradTidStart;
+			markeradTidStart = temp;
+		}
+
+		int startBådaTillsamans = markeradTidStart.getTimme() * 100 + markeradTidStart.getMinut();
+		int slutBådaTillsamans = markeradTidSlut.getTimme() * 100 + markeradTidSlut.getMinut();
+
+		Platform.runLater(() -> {
+			markerade.forEach((sak) -> sak.setFill(Color.BLACK));
+			markerade.clear();
+
+			/* ArrayList<Text >utsorterade = */ allaMinuter
+					.forEach(/* .stream() *//* parallelStream() *//* .filter( */(Text pp) -> {
+						if (pp instanceof Text) {// getChildrenUnmodifiable()
+							int timmeFörDel = Integer.parseInt(((Text) pp).getId().split(":")[0]);
+							int minutFörDel = Integer.parseInt(((Text) pp).getId().split(":")[1]);
+							int bådaTillsamans = timmeFörDel * 100 + minutFörDel;
+
+							// System.out.println("\ntid: " +((Text)pp).getId()+
+							// "\nbådaTillsamans " +bådaTillsamans + "
+							// startBådaTillsamans" + startBådaTillsamans
+							// +"\nbådaTillsamans " + bådaTillsamans + "
+							// slutBådaTillsamans " + slutBådaTillsamans);
+							if (bådaTillsamans >= startBådaTillsamans && bådaTillsamans <= slutBådaTillsamans) {
+								// transient Object[] elementData
+								final Text text = ((Text) pp);
+								((Text) pp).setFill(färg);
+								markerade.add(((Text) pp));
+								// return true;
+							}
+
+						}
+					});
+		});
 	}
 
 	public ArrayList<CalenderEvent> getAllEvent() {
@@ -689,11 +734,24 @@ public class CalenderBuilderContainer{
 		markerade.clear();
 	}
 
-	public void getMarkeradeMinuter() {
-		for(Text t: markerade)
-			System.out.println(t.getId());
-		System.out.println("-------" + markerade.size());
-//		return new CalenderEvent(, till, rubrik, boddy)
+	public TidPunkt[] getMarkeradeMinuter() {
+		TidPunkt[] ret = new TidPunkt[markerade.size()];
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = getTidpunkFromText(markerade.get(i).getId());//getCalendarEventWithId(markerade.get(i).getId());
+		}
+		return ret;
+	}
+
+	private TidPunkt getTidpunkFromText(String text) {
+		String[] tal = text.split(":");
+		if(tal.length !=2)
+			return null;
+		try {
+			return new TidPunkt(Integer.parseInt(tal[0]), Integer.parseInt(tal[1]));
+		} catch (NumberFormatException e) {
+			return null;
+		}
+		
 	}
 
 
