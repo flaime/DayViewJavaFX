@@ -32,4 +32,21 @@ public class TidPunkt {
 		else
 			return minut+"";
 	}
+	
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null)
+			return false;
+		else if(obj instanceof TidPunkt){
+			if(((TidPunkt)obj).getMinut() == getMinut() && ((TidPunkt)obj).getTimme()==getTimme())
+				return true;
+		}
+		
+		return false;
+	}
 }
