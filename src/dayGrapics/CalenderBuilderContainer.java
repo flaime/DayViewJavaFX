@@ -67,9 +67,9 @@ public class CalenderBuilderContainer{
 	}
 	private ArrayList<ArrayList<CalenderEvent>> calenderHändelser = new ArrayList<>();
 	
-	private Vy vyn = Vy.minutVy;
+//	private Vy vyn = Vy.minutVy;
 //	Vy vyn = Vy.timmVy;
-//	Vy vyn = Vy.dagVy;
+	private Vy vyn = Vy.dagVy;
 	
 	private double minutHöjd = -1;
 	
@@ -340,20 +340,28 @@ public class CalenderBuilderContainer{
 		rubrik.textProperty().bind(event.getRubrikObservably());//Bindings.createStringBinding(() -> event.getFrånTillObservably()+ " "+event.getRubrik()));//Bindings.concat(event.getFrånTillObservably(), " ",event.getRubrik())); //setText(event.getFrån() + "-" + event.getTill() + "\t" +event.getRubrik());
 		HBox toppDel = new HBox(tid,new Text(" "),rubrik);
 		StackPane rubrikPane = new StackPane(toppDel);//rubrik);
-		rubrikPane.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
-		
+		if(event.getColorHeading() == null)
+			rubrikPane.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
+		else
+			rubrikPane.setBackground(new Background(new BackgroundFill(event.getColorHeading(), CornerRadii.EMPTY, Insets.EMPTY)));
+		rubrikPane.setId("RubrikPane");
+		rubrik.setId("Hedder");
 		
 		Text bodyn = new Text();
 		bodyn.textProperty().bind(event.getBoddyObservably());
+		bodyn.setId("Bodyn");
 		
 		Separator sep = new Separator();
 		GridPane kroppen = new GridPane();
+		kroppen.setId("kroppen");
+		kroppen.setBackground(new Background(new BackgroundFill(event.getColorBody(), CornerRadii.EMPTY, Insets.EMPTY)));
 		
 		kroppen.add(rubrikPane, 1, 1);
 		kroppen.add(bodyn, 1, 3);
 		kroppen.add(sep, 1,2);
 		ScrollPane ret = new ScrollPane(kroppen);
-
+		ret.setId(event.getId()+"");
+		
 		ret.setMaxHeight(height);
 		ret.setPrefHeight(height);
 		ret.setMinHeight(height);
@@ -399,8 +407,35 @@ public class CalenderBuilderContainer{
 	}
 	
 	public void uppdateCalenderEventTime(CalenderEvent calenderEvent) {
-		removeEvent(calenderEvent);
-		addEvent(calenderEvent);
+		if(removeEvent(calenderEvent))
+			addEvent(calenderEvent);
+	}
+	public void uppdateCalenderEventColor(CalenderEvent calenderEvent) {
+		gridPane.getChildren().stream()
+			.filter(x->x.getId()!=null)
+			.filter(x->x.getId().matches(calenderEvent.getId()+""))//"\\d*"))
+			.filter(x-> x instanceof ScrollPane)
+			.forEach(x->{
+				Platform.runLater(() -> {
+					System.out.println(x);
+					System.out.println(((GridPane)((ScrollPane)x).getContent()).getChildren());
+					((GridPane)((ScrollPane)x).getContent()).setBackground(new Background(new BackgroundFill(calenderEvent.getColorBody(), CornerRadii.EMPTY, Insets.EMPTY)));
+					((GridPane)((ScrollPane)x).getContent()).getChildren()
+						.stream()
+						.filter(xy-> xy.getId() != null)
+						.forEach(xx->{
+							if(xx.getId().equals("Hedder"))
+								((StackPane)xx).setBackground(new Background(new BackgroundFill(calenderEvent.getColorHeading(), CornerRadii.EMPTY, Insets.EMPTY)));
+							else if(xx.getId().equals("RubrikPane"))
+								((StackPane)xx).setBackground(new Background(new BackgroundFill(calenderEvent.getColorHeading(), CornerRadii.EMPTY, Insets.EMPTY)));
+//							else if(xx.getId().equals("Bodyn"))
+//								((Text)xx).setFill(calenderEvent.getColorBody());
+						});
+						
+				});
+			});
+//		removeEvent(calenderEvent);
+//		addEvent(calenderEvent);
 	}
 
 	

@@ -4,7 +4,10 @@ import java.util.ArrayList;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 public class CalenderEvent {
 
@@ -17,7 +20,19 @@ public class CalenderEvent {
 	private final int dennasId;
 	private SimpleStringProperty FrånTillObservably = new SimpleStringProperty();
 	private ArrayList<CalenderBuilderContainer> uppdateTimeLinks = new ArrayList<>();
+	private Color colorBody = null;
+	private Color colorRibrik = null;
 	
+	public CalenderEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy,Color boddyColor, Color rubrikColor) {
+		this(från, till, rubrik, boddy);
+		colorBody = boddyColor;
+		colorRibrik = rubrikColor;
+	}
+	public CalenderEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy, boolean scrollEnabled,Color boddyColor, Color rubrikColor) {
+		this(från, till, rubrik, boddy, scrollEnabled);
+		colorBody = boddyColor;
+		colorRibrik = rubrikColor;
+	}
 	public CalenderEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy, boolean scrollEnabled) {
 		this.boddy.setValue(boddy);
 		this.rubrik.setValue(rubrik);
@@ -128,7 +143,31 @@ public class CalenderEvent {
 	public void setScrollEnabled(boolean scrollEnabled) {
 		this.scrollEnabled = scrollEnabled;
 	}
+	public Color getColorHeading() {
+		return colorRibrik;
+	}
+	public void setColorHeading(Color colorRibrik) {
+		this.colorRibrik = colorRibrik;
+		uppdateTimeLinks.forEach(x-> x.uppdateCalenderEventColor(this));
+	}
 	
+	public Color getColorBody() {
+		return colorBody;
+	}
+	public void setColorBody(Color colorBody) {
+		this.colorBody = colorBody;
+		uppdateTimeLinks.forEach(x-> x.uppdateCalenderEventColor(this));
+	}
+	public void setColor(Color color) {
+		this.colorBody = color;
+		this.colorRibrik = color;
+		uppdateTimeLinks.forEach(x-> x.uppdateCalenderEventColor(this));
+	}
+	public void setColor(Color colorBody, Color colorHedder) {
+		this.colorBody = colorBody;
+		this.colorRibrik = colorHedder;
+		uppdateTimeLinks.forEach(x-> x.uppdateCalenderEventColor(this));
+	}
 	@Override
 	public boolean equals(Object obj) {
 		if((obj == null) || (obj.getClass() != this.getClass())) {
@@ -144,7 +183,4 @@ public class CalenderEvent {
 	public int hashCode() {
 		return getId();
 	}
-	
-	
-	
 }
