@@ -261,7 +261,7 @@ public class CalenderBuilderContainer{
 			boolean krokar = false;
 			for(int i =1; i < calenderHändelser.size();i++){//ArrayList<CalenderEvent> list : calenderHändelser){
 				for(CalenderEvent gämföraMed : calenderHändelser.get(i)){
-					if(överlapparDessa(event, gämföraMed)){
+					if(overlapping(event, gämföraMed)){
 						krokar = true;
 					}
 				}
@@ -446,7 +446,7 @@ public class CalenderBuilderContainer{
 		for(ArrayList<CalenderEvent> array: calenderHändelser){
 			int nivåinnan = nivå;
 			for(CalenderEvent testaMot: array){
-				if(överlapparDessa(testaMot, event)){
+				if(overlapping(testaMot, event)){
 					nivå++;
 					break;
 				}
@@ -487,7 +487,7 @@ public class CalenderBuilderContainer{
 	}
 	
 	
-	public static boolean överlapparDessa(CalenderEvent a, CalenderEvent b){
+	public static boolean overlapping(CalenderEvent a, CalenderEvent b){ //överlapparDessa
 		int aStart = (a.getFrån().getTimme()* 100) + a.getFrån().getMinut();
 		int aSlut = (a.getTill().getTimme()* 100) + a.getTill().getMinut();
 
@@ -889,7 +889,7 @@ public class CalenderBuilderContainer{
 //		markerade.clear();
 	}
 
-	public TidPunkt[] getMarkeradeMinuter() {
+	public TidPunkt[] getMarkedMinutes() {
 		TidPunkt[] ret = new TidPunkt[2];
 		if(markeradTidSlut != null && markeradTidStart !=null){
 			ret[0] = markeradTidStart;
@@ -916,26 +916,26 @@ public class CalenderBuilderContainer{
 
 	public void setMarkedTime(TidPunkt startTime, TidPunkt endTime) {
 		if(markeradTidSlut != null && markeradTidStart !=null)
-			fï¿½rgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
+			färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
 		else if(markeradTidStart != null){
-			fï¿½rgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,bakrundWhite);
+			färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,bakrundWhite);
 		}
 		markeradTidSlut = endTime;
 		markeradTidStart = startTime;
 		
 		if (markeradTidSlut != null && markeradTidStart != null) {
-			fï¿½rgaMinuter(markeradTidStart, markeradTidSlut, Color.GREEN,bakrundGren);
+			färgaMinuter(markeradTidStart, markeradTidSlut, Color.GREEN,bakrundGren);
 		} else if (markeradTidStart != null) {
-			fï¿½rgaMinuter(markeradTidStart, markeradTidStart, Color.GREEN,bakrundGren);
+			färgaMinuter(markeradTidStart, markeradTidStart, Color.GREEN,bakrundGren);
 		}
 		
 	}
 
 	public void clearSelectedTime() {
 		if(markeradTidSlut != null && markeradTidStart !=null)
-			fï¿½rgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
+			färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
 		else if(markeradTidStart != null){
-			fï¿½rgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,bakrundWhite);
+			färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,bakrundWhite);
 		}
 		markeradTidSlut = null;
 		markeradTidStart = null;
