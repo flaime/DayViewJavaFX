@@ -914,6 +914,34 @@ public class CalenderBuilderContainer{
 		
 	}
 
+	public void setMarkedTime(TidPunkt startTime, TidPunkt endTime) {
+		if(markeradTidSlut != null && markeradTidStart !=null)
+			f�rgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
+		else if(markeradTidStart != null){
+			f�rgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,bakrundWhite);
+		}
+		markeradTidSlut = endTime;
+		markeradTidStart = startTime;
+		
+		if (markeradTidSlut != null && markeradTidStart != null) {
+			f�rgaMinuter(markeradTidStart, markeradTidSlut, Color.GREEN,bakrundGren);
+		} else if (markeradTidStart != null) {
+			f�rgaMinuter(markeradTidStart, markeradTidStart, Color.GREEN,bakrundGren);
+		}
+		
+	}
+
+	public void clearSelectedTime() {
+		if(markeradTidSlut != null && markeradTidStart !=null)
+			f�rgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
+		else if(markeradTidStart != null){
+			f�rgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,bakrundWhite);
+		}
+		markeradTidSlut = null;
+		markeradTidStart = null;
+		
+	}
+
 
 
 }
