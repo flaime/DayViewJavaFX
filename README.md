@@ -12,6 +12,7 @@ Some coming features:
 * **done** Easier auto update of values like body text, time....
 * Make it possibly to dynamic change the minute size (low priority for the moment)
 * Rewrite the whole or solve the "bugs" that makes it extremely slow (**priority**)
+* Change alla swedish to english at least the methods and "TidPunkt" class
 
 
 ## How to ouse
