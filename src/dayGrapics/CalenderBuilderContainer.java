@@ -256,7 +256,7 @@ public class CalenderBuilderContainer{
 	}
 	
 	private ArrayList<CalenderEvent> allaFixadeUtdragna = new ArrayList<>();
-	public void fixaAllaIckeKrokande(){
+	private void fixaAllaIckeKrokande(){
 		for(CalenderEvent event :calenderHändelser.get(0)){
 			boolean krokar = false;
 			for(int i =1; i < calenderHändelser.size();i++){//ArrayList<CalenderEvent> list : calenderHändelser){
