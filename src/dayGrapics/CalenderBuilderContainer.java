@@ -332,6 +332,7 @@ public class CalenderBuilderContainer{
 
 
 
+	private final Background standardBacroundHedderBackround = new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY));
 	private ScrollPane createCalenderEvent(CalenderEvent event,double height){ //String rubriken, String boddy, double height){
 		
 		Text tid = new Text();
@@ -341,7 +342,7 @@ public class CalenderBuilderContainer{
 		HBox toppDel = new HBox(tid,new Text(" "),rubrik);
 		StackPane rubrikPane = new StackPane(toppDel);//rubrik);
 		if(event.getColorHeading() == null)
-			rubrikPane.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
+			rubrikPane.setBackground(standardBacroundHedderBackround);
 		else
 			rubrikPane.setBackground(new Background(new BackgroundFill(event.getColorHeading(), CornerRadii.EMPTY, Insets.EMPTY)));
 		rubrikPane.setId("RubrikPane");
@@ -501,36 +502,56 @@ public class CalenderBuilderContainer{
 //	private ArrayList<Text> markerade = new ArrayList<>();
 	private boolean harLämnat = false;
 	private boolean dropped = true;
-
+	
+	private Background bakrundBlack = new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY));
+	private Background bakrundWhite = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
+	private Background bakrundGren = new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY));
+	private Background bakrundOrange = new Background(new BackgroundFill(Color.ORANGE, CornerRadii.EMPTY, Insets.EMPTY));
 	private Node addMinutTextEgenskaper(Node t, int minut, int timme) {
 
 		t.setId(fixaTillMinuter(timme) + ":" + fixaTillMinuter(minut));
 //		allaMinuter.add(t);
 
-		t.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent event) {
-//				 markerade.forEach(sak -> sak.setFill(Color.BLACK));
-				if (markeradTidSlut != null && markeradTidStart != null) {
-					färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, Color.WHITE);
-				} else if (markeradTidStart != null) {
-					färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK, Color.WHITE);
-				}
-
-				int minutTid = gridPane.getRowIndex(t);
-				int timme = minutTid / 60;
-				int minut = minutTid - (60 * timme);
-				markeradTidStart = new TidPunkt(timme, minut);
-				markeradTidSlut = null;
-//				markerade.clear();
-//				markerade.add(t);
-
-				if (markeradTidSlut != null && markeradTidStart != null) {
-					färgaMinuter(markeradTidStart, markeradTidSlut, Color.GREEN,Color.GREEN);
-				} else if (markeradTidStart != null) {
-					färgaMinuter(markeradTidStart, markeradTidStart, Color.GREEN,Color.GREEN);
-				}
-				event.consume();
+		t.setOnMouseClicked(event->{
+			Color färg = Color.BLACK;
+//			if(t instanceof Pane){
+//				((Pane) t).setBackground(new Background(new BackgroundFill(färg, CornerRadii.EMPTY, Insets.EMPTY)));
+//			}else{
+//				((Text) t).setFill(färg);
+//			}
+				
+//			 markerade.forEach(sak -> sak.setFill(Color.BLACK));
+			long starttid = System.currentTimeMillis();
+			System.out.println("start");
+			if (markeradTidSlut != null && markeradTidStart != null) {
+				färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
+			} else if (markeradTidStart != null) {
+				färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK, bakrundWhite);
 			}
+			
+			long tidNu = System.currentTimeMillis();
+			long tid = tidNu-starttid;
+			System.out.println("ritat ut första gången tog:"+tid);
+
+			int minutTid = gridPane.getRowIndex(t);
+			int timmeTimme = minutTid / 60;
+			int minutMinut = minutTid - (60 * timmeTimme);
+			markeradTidStart = new TidPunkt(timmeTimme, minutMinut);
+			markeradTidSlut = null;
+//			markerade.clear();
+//			markerade.add(t);
+			
+			tid = System.currentTimeMillis() -tidNu;
+			tidNu = System.currentTimeMillis();
+			System.out.println("tid efter mittenberäknigar:\n"+tid);
+			if (markeradTidSlut != null && markeradTidStart != null) {
+				färgaMinuter(markeradTidStart, markeradTidSlut, Color.GREEN,bakrundGren);
+			} else if (markeradTidStart != null) {
+				färgaMinuter(markeradTidStart, markeradTidStart, Color.GREEN,bakrundGren);
+			}
+			event.consume();
+			repaintAll();
+			System.out.println("tid till slute:\n"+(System.currentTimeMillis()-tidNu));
 		});
 
 		
@@ -538,9 +559,9 @@ public class CalenderBuilderContainer{
 		t.setOnDragDetected(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
 				if(markeradTidSlut != null && markeradTidStart !=null)
-					färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, Color.WHITE);
+					färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
 				else if(markeradTidStart != null){
-					färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,Color.WHITE);
+					färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,bakrundWhite);
 				}
 				
 //				Platform.runLater(() -> {
@@ -572,9 +593,9 @@ public class CalenderBuilderContainer{
 //				markerade.add(t);
 //				t.setFill(Color.ORANGE);
 				if(markeradTidSlut != null && markeradTidStart !=null)
-					färgaMinuter(markeradTidStart, markeradTidSlut, Color.ORANGE, Color.ORANGE);
+					färgaMinuter(markeradTidStart, markeradTidSlut, Color.ORANGE, bakrundOrange );
 				else if(markeradTidStart != null){
-					färgaMinuter(markeradTidStart, markeradTidStart, Color.ORANGE,Color.ORANGE);
+					färgaMinuter(markeradTidStart, markeradTidStart, Color.ORANGE,bakrundOrange );
 				}
 
 				Dragboard db = t.startDragAndDrop(TransferMode.ANY);
@@ -599,9 +620,9 @@ public class CalenderBuilderContainer{
 				
 				setMarkeradSlutTid(t);
 				if(markeradTidSlut != null && markeradTidStart !=null)
-					färgaMinuter(markeradTidStart, markeradTidSlut, Color.ORANGE, Color.ORANGE);
+					färgaMinuter(markeradTidStart, markeradTidSlut, Color.ORANGE, bakrundOrange );
 				else if(markeradTidStart != null){
-					färgaMinuter(markeradTidStart, markeradTidStart, Color.ORANGE,Color.ORANGE);
+					färgaMinuter(markeradTidStart, markeradTidStart, Color.ORANGE,bakrundOrange );
 				}
 				
 //				((Text)t).setFill(Color.ORANGE);
@@ -643,9 +664,9 @@ public class CalenderBuilderContainer{
 //				färgaMinuter(markeradTidStart,markeradTidSlut,Color.ORANGE,Color.ORANGE);
 				setMarkeradSlutTid(t);
 				if(markeradTidSlut != null && markeradTidStart !=null)
-					färgaMinuter(markeradTidStart, markeradTidSlut, Color.ORANGE, Color.ORANGE);
+					färgaMinuter(markeradTidStart, markeradTidSlut, Color.ORANGE, bakrundOrange );
 				else if(markeradTidStart != null){
-					färgaMinuter(markeradTidStart, markeradTidStart, Color.ORANGE,Color.ORANGE);
+					färgaMinuter(markeradTidStart, markeradTidStart, Color.ORANGE,bakrundOrange );
 				}
 //				/* the drag-and-drop gesture entered the target */
 //				/* show to the user that it is an actual gesture target */
@@ -674,7 +695,7 @@ public class CalenderBuilderContainer{
 				int minut = minutTid - (60*timme);
 				TidPunkt markeradTidSlutsak = new TidPunkt(timme, minut);
 				markeradTidSlut = markeradTidSlutsak;
-				färgaMinuter(markeradTidStart,markeradTidSlutsak,Color.GREEN, Color.GREEN);
+				färgaMinuter(markeradTidStart,markeradTidSlutsak,Color.GREEN, bakrundGren);
 				Dragboard db = event.getDragboard();
 				event.setDropCompleted(true);
 //				/* data dropped */
@@ -703,9 +724,9 @@ public class CalenderBuilderContainer{
 				if(dropped == false){
 					setMarkeradSlutTid(t);
 					if(markeradTidSlut != null && markeradTidStart !=null)
-						färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, Color.WHITE);
+						färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
 					else if(markeradTidStart != null){
-						färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,Color.WHITE);
+						färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,bakrundWhite);
 					}
 					harLämnat = true;
 					
@@ -715,7 +736,7 @@ public class CalenderBuilderContainer{
 						int timme = minutTid/60;
 						int minut = minutTid - (60*timme);
 						TidPunkt markeradTidSlut = new TidPunkt(timme, minut);
-						färgaMinuter(markeradTidStart,markeradTidSlut,Color.BLACK, Color.WHITE);
+						färgaMinuter(markeradTidStart,markeradTidSlut,Color.BLACK, bakrundWhite);
 					}	
 					event.consume();
 				}
@@ -733,9 +754,12 @@ public class CalenderBuilderContainer{
 		TidPunkt markeradTidSlutsak = new TidPunkt(timme, minut);
 		markeradTidSlut = markeradTidSlutsak;
 	}
-	
 	private void färgaMinuter(TidPunkt markeradTidStart, TidPunkt markeradTidSlut, Color färgText, Color färgAnnat) {
-
+		färgaMinuter(markeradTidStart, markeradTidSlut, färgText, new Background(new BackgroundFill(färgAnnat, CornerRadii.EMPTY, Insets.EMPTY)));
+	}
+	private void färgaMinuter(TidPunkt markeradTidStart, TidPunkt markeradTidSlut, Color färgText, Background barkundsfärg) {
+		
+		System.out.println("anropet kommer");
 		// ändrar plattsen på dem så de i "programet" "ser ut att vara markerade
 		// i rätt årnind" då detta ine påvekar funktionalitet men under lättar
 		// följande kod
@@ -747,12 +771,12 @@ public class CalenderBuilderContainer{
 		}
 		int startBådaTillsamans = markeradTidStart.getTimme() * 100 + markeradTidStart.getMinut();
 		int slutBådaTillsamans = markeradTidSlut.getTimme() * 100 + markeradTidSlut.getMinut();
-
+		Platform.runLater(() -> {
 //		Platform.runLater(() -> {
 //			markerade.forEach((sak) -> sak.setFill(Color.BLACK));
 //			markerade.clear();
 //		});
-		
+		System.out.println("innan filter börjar");
 		gridPane.getChildren().stream()//parallelStream()
 			.filter(x-> x.getId()!=null)
 			.filter(y-> y.getId().matches("\\d\\d:\\d\\d"))
@@ -767,19 +791,20 @@ public class CalenderBuilderContainer{
 					return false;
 			})
 			.forEach(pp->{
-				Platform.runLater(() -> {
+//				Platform.runLater(() -> {
+					System.out.println("ändar färgen nu----");
 					if(pp instanceof Pane){
-						((Pane) pp).setBackground(new Background(new BackgroundFill(färgAnnat, CornerRadii.EMPTY, Insets.EMPTY)));
+//						((Pane) pp).setBackground(barkundsfärg);
 //						markerade.add(((Pane) pp));
 					}else{
 	//					final Text text = ((Text) pp);
 						((Text) pp).setFill(färgText);
 //						markerade.add(((Text) pp));
 					}
-				});
+//				});
 			});
 		
-
+		});
 		
 	}
 
@@ -827,9 +852,9 @@ public class CalenderBuilderContainer{
 		markeradTidStart = sparadStartMarkerad;
 		markeradTidSlut = sparadSlutMarkerad;
 		if(markeradTidSlut != null && markeradTidStart !=null)
-			färgaMinuter(markeradTidStart,markeradTidSlut,Color.GREEN, Color.GREEN);
+			färgaMinuter(markeradTidStart,markeradTidSlut,Color.GREEN, bakrundGren);
 		else if(markeradTidStart !=null)
-			färgaMinuter(markeradTidStart,markeradTidStart,Color.GREEN, Color.GREEN);
+			färgaMinuter(markeradTidStart,markeradTidStart,Color.GREEN, bakrundGren);
 		//		markeradeSparade.forEach(mp -> {
 //			allaMinuter.stream()
 //			.filter(am -> am.getId().equalsIgnoreCase(mp))
