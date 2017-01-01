@@ -163,6 +163,7 @@ public class CalenderBuilderContainer{
 			    Pane minutPane = new Pane();
 			    minutPane.setId(fixaTillMinuter(timme-1) + ":" + fixaTillMinuter(minut-1));
 			    	minutPane = (Pane) addMinutTextEgenskaper(minutPane, minut,timme-1);
+			    	minutPane.setBackground(bakrundWhite);
 			    gridPane.add(minutPane,3,i);
 			    
 				if (vyn == Vy.minutVy) {
@@ -417,7 +418,6 @@ public class CalenderBuilderContainer{
 			.filter(x->x.getId().matches(calenderEvent.getId()+""))//"\\d*"))
 			.filter(x-> x instanceof ScrollPane)
 			.forEach(x->{
-				Platform.runLater(() -> {
 					System.out.println(x);
 					System.out.println(((GridPane)((ScrollPane)x).getContent()).getChildren());
 					((GridPane)((ScrollPane)x).getContent()).setBackground(new Background(new BackgroundFill(calenderEvent.getColorBody(), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -433,7 +433,6 @@ public class CalenderBuilderContainer{
 //								((Text)xx).setFill(calenderEvent.getColorBody());
 						});
 						
-				});
 			});
 //		removeEvent(calenderEvent);
 //		addEvent(calenderEvent);
@@ -473,7 +472,7 @@ public class CalenderBuilderContainer{
 					minutPane.setCacheHint(CacheHint.SPEED);
 				    minutPane.setId(fixaTillMinuter(timme) + ":" + fixaTillMinuter(minut));
 				    minutPane = (Pane) addMinutTextEgenskaper(minutPane, minut ,timme);
-//				    minutPane.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+				    minutPane.setBackground(bakrundWhite);//new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 				    gridPane.add(minutPane,calenderHändelser.size()-1+3,y);
 				    minut++;
 				    if(minut == 60){
@@ -514,13 +513,6 @@ public class CalenderBuilderContainer{
 
 		t.setOnMouseClicked(event->{
 			Color färg = Color.BLACK;
-//			if(t instanceof Pane){
-//				((Pane) t).setBackground(new Background(new BackgroundFill(färg, CornerRadii.EMPTY, Insets.EMPTY)));
-//			}else{
-//				((Text) t).setFill(färg);
-//			}
-				
-//			 markerade.forEach(sak -> sak.setFill(Color.BLACK));
 			long starttid = System.currentTimeMillis();
 			System.out.println("start");
 			if (markedTimeEnd != null && markedTimeStart != null) {
@@ -531,7 +523,7 @@ public class CalenderBuilderContainer{
 			
 			long tidNu = System.currentTimeMillis();
 			long tid = tidNu-starttid;
-			System.out.println("ritat ut första gången tog:"+tid);
+			System.out.println("Print first time:\n"+tid);
 
 			int minutTid = gridPane.getRowIndex(t);
 			int timmeTimme = minutTid / 60;
@@ -543,15 +535,14 @@ public class CalenderBuilderContainer{
 			
 			tid = System.currentTimeMillis() -tidNu;
 			tidNu = System.currentTimeMillis();
-			System.out.println("tid efter mittenberäknigar:\n"+tid);
+			System.out.println("Time for the middel calculations:\n"+tid);
 			if (markedTimeEnd != null && markedTimeStart != null) {
 				colorMinutes(markedTimeStart, markedTimeEnd, Color.GREEN,bakrundGren);
 			} else if (markedTimeStart != null) {
 				colorMinutes(markedTimeStart, markedTimeStart, Color.GREEN,bakrundGren);
 			}
 			event.consume();
-			repaintAll();
-			System.out.println("tid till slute:\n"+(System.currentTimeMillis()-tidNu));
+			System.out.println("Time to end:\n"+(System.currentTimeMillis()-tidNu));
 		});
 
 		
@@ -563,14 +554,6 @@ public class CalenderBuilderContainer{
 				else if(markedTimeStart != null){
 					colorMinutes(markedTimeStart, markedTimeStart, Color.BLACK,bakrundWhite);
 				}
-				
-//				Platform.runLater(() -> {
-//					if(markerade.size() !=0){
-//						markerade.forEach((sak)-> sak.setFill(Color.BLACK));
-//						markerade.clear();
-//					}
-//				});
-					
 				markedTimeEnd = null;
 				dropped = false;
 //				if(harLämnat == true){
@@ -578,13 +561,6 @@ public class CalenderBuilderContainer{
 //					markerade.clear();
 //				}
 //				markerade.add((Text) t);
-				
-//				Platform.runLater(() -> {
-//					if(markerade.size() !=0){
-//						markerade.forEach((sak)-> sak.setFill(Color.BLACK));
-//						markerade.clear();
-//					}
-//				});
 				int minutTid = gridPane.getRowIndex(t);
 				
 				int timme = minutTid/60;
@@ -754,57 +730,51 @@ public class CalenderBuilderContainer{
 		TidPunkt markeradTidSlutsak = new TidPunkt(timme, minut);
 		markedTimeEnd = markeradTidSlutsak;
 	}
-	private void färgaMinuter(TidPunkt markeradTidStart, TidPunkt markeradTidSlut, Color färgText, Color färgAnnat) {
-		colorMinutes(markeradTidStart, markeradTidSlut, färgText, new Background(new BackgroundFill(färgAnnat, CornerRadii.EMPTY, Insets.EMPTY)));
+	private void färgaMinuter(TidPunkt markeradTidStart, TidPunkt markeradTidSlut, Color färgText, Color colorOther) {
+		colorMinutes(markeradTidStart, markeradTidSlut, färgText, new Background(new BackgroundFill(colorOther, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
-	private void colorMinutes(TidPunkt markeradTidStart, TidPunkt markeradTidSlut, Color färgText, Background barkundsfärg) {
+	private void colorMinutes(TidPunkt markedTimeStart, TidPunkt markedTimeEnd, Color colorText, Background colorOther) {
 		
-		System.out.println("anropet kommer");
+		System.out.println("The call is comming");
 		// ändrar plattsen på dem så de i "programet" "ser ut att vara markerade
 		// i rätt årnind" då detta ine påvekar funktionalitet men under lättar
 		// följande kod
-		if (markeradTidSlut.getTimme() * 100 + markeradTidSlut.getMinut() < markeradTidStart.getTimme() * 100
-				+ markeradTidStart.getMinut()) {
-			TidPunkt temp = markeradTidSlut;
-			markeradTidSlut = markeradTidStart;
-			markeradTidStart = temp;
+		if (markedTimeEnd.getTimme() * 100 + markedTimeEnd.getMinut() < markedTimeStart.getTimme() * 100
+				+ markedTimeStart.getMinut()) {
+			TidPunkt temp = markedTimeEnd;
+			markedTimeEnd = markedTimeStart;
+			markedTimeStart = temp;
 		}
-		int startBådaTillsamans = markeradTidStart.getTimme() * 100 + markeradTidStart.getMinut();
-		int slutBådaTillsamans = markeradTidSlut.getTimme() * 100 + markeradTidSlut.getMinut();
-		Platform.runLater(() -> {
-//		Platform.runLater(() -> {
-//			markerade.forEach((sak) -> sak.setFill(Color.BLACK));
-//			markerade.clear();
-//		});
-		System.out.println("innan filter börjar");
+		int startBothTogether = markedTimeStart.getTimme() * 100 + markedTimeStart.getMinut();
+		int endBothTogether = markedTimeEnd.getTimme() * 100 + markedTimeEnd.getMinut();
+		System.out.println("Befor filter");
 		gridPane.getChildren().stream()//parallelStream()
 			.filter(x-> x.getId()!=null)
 			.filter(y-> y.getId().matches("\\d\\d:\\d\\d"))
 			.filter(pp->{
-				int timmeFörDel = Integer.parseInt(((Node) pp).getId().split(":")[0]);
-				int minutFörDel = Integer.parseInt(((Node) pp).getId().split(":")[1]);
-				int bådaTillsamans = timmeFörDel * 100 + minutFörDel;
-//				System.out.println("pp="+pp);
-				if (bådaTillsamans >= startBådaTillsamans && bådaTillsamans <= slutBådaTillsamans)
+				int hoursForPart = Integer.parseInt(((Node) pp).getId().substring(0, 2));//((Node) pp).getId().split(":")[0]);
+				int miutesForPart = Integer.parseInt(((Node) pp).getId().substring(3, 5));//((Node) pp).getId().split(":")[1]);
+				int bothTogether = hoursForPart * 100 + miutesForPart;
+				if (bothTogether >= startBothTogether && bothTogether <= endBothTogether)
 					return true;
 				else 
 					return false;
 			})
 			.forEach(pp->{
-//				Platform.runLater(() -> {
-					System.out.println("ändar färgen nu----");
+					System.out.println("Changing collor ----");
 					if(pp instanceof Pane){
-//						((Pane) pp).setBackground(barkundsfärg);
-//						markerade.add(((Pane) pp));
+						System.out.println("1");
+						((Pane) pp).setBackground(colorOther);
+						System.out.println("2");
 					}else{
-	//					final Text text = ((Text) pp);
-						((Text) pp).setFill(färgText);
+						System.out.println("11");
+//						((Text) pp).setFill(colorText);
+						System.out.println("22");
 //						markerade.add(((Text) pp));
 					}
-//				});
 			});
 		
-		});
+//		});
 		
 	}
 
@@ -879,7 +849,6 @@ public class CalenderBuilderContainer{
 	         RowConstraints row = new RowConstraints(minutHöjd);
 	         gridPane.getRowConstraints().add(row);
 	     }
-		
 	}
 
 	private void clearAll() {
