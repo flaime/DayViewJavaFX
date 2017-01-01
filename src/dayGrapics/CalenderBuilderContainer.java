@@ -497,8 +497,8 @@ public class CalenderBuilderContainer{
 		return (aStart < bSlut && bStart < aSlut);
 	}
 	
-	private TidPunkt markeradTidStart = null;
-	private TidPunkt markeradTidSlut = null;
+	private TidPunkt markedTimeStart = null;
+	private TidPunkt markedTimeEnd = null;
 //	private ArrayList<Text> markerade = new ArrayList<>();
 	private boolean harLämnat = false;
 	private boolean dropped = true;
@@ -523,10 +523,10 @@ public class CalenderBuilderContainer{
 //			 markerade.forEach(sak -> sak.setFill(Color.BLACK));
 			long starttid = System.currentTimeMillis();
 			System.out.println("start");
-			if (markeradTidSlut != null && markeradTidStart != null) {
-				färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
-			} else if (markeradTidStart != null) {
-				färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK, bakrundWhite);
+			if (markedTimeEnd != null && markedTimeStart != null) {
+				colorMinutes(markedTimeStart, markedTimeEnd, Color.BLACK, bakrundWhite);
+			} else if (markedTimeStart != null) {
+				colorMinutes(markedTimeStart, markedTimeStart, Color.BLACK, bakrundWhite);
 			}
 			
 			long tidNu = System.currentTimeMillis();
@@ -536,18 +536,18 @@ public class CalenderBuilderContainer{
 			int minutTid = gridPane.getRowIndex(t);
 			int timmeTimme = minutTid / 60;
 			int minutMinut = minutTid - (60 * timmeTimme);
-			markeradTidStart = new TidPunkt(timmeTimme, minutMinut);
-			markeradTidSlut = null;
+			markedTimeStart = new TidPunkt(timmeTimme, minutMinut);
+			markedTimeEnd = null;
 //			markerade.clear();
 //			markerade.add(t);
 			
 			tid = System.currentTimeMillis() -tidNu;
 			tidNu = System.currentTimeMillis();
 			System.out.println("tid efter mittenberäknigar:\n"+tid);
-			if (markeradTidSlut != null && markeradTidStart != null) {
-				färgaMinuter(markeradTidStart, markeradTidSlut, Color.GREEN,bakrundGren);
-			} else if (markeradTidStart != null) {
-				färgaMinuter(markeradTidStart, markeradTidStart, Color.GREEN,bakrundGren);
+			if (markedTimeEnd != null && markedTimeStart != null) {
+				colorMinutes(markedTimeStart, markedTimeEnd, Color.GREEN,bakrundGren);
+			} else if (markedTimeStart != null) {
+				colorMinutes(markedTimeStart, markedTimeStart, Color.GREEN,bakrundGren);
 			}
 			event.consume();
 			repaintAll();
@@ -558,10 +558,10 @@ public class CalenderBuilderContainer{
 		///-----------------------------............--------------
 		t.setOnDragDetected(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
-				if(markeradTidSlut != null && markeradTidStart !=null)
-					färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
-				else if(markeradTidStart != null){
-					färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,bakrundWhite);
+				if(markedTimeEnd != null && markedTimeStart !=null)
+					colorMinutes(markedTimeStart, markedTimeEnd, Color.BLACK, bakrundWhite);
+				else if(markedTimeStart != null){
+					colorMinutes(markedTimeStart, markedTimeStart, Color.BLACK,bakrundWhite);
 				}
 				
 //				Platform.runLater(() -> {
@@ -571,7 +571,7 @@ public class CalenderBuilderContainer{
 //					}
 //				});
 					
-				markeradTidSlut = null;
+				markedTimeEnd = null;
 				dropped = false;
 //				if(harLämnat == true){
 					harLämnat = false;
@@ -589,13 +589,13 @@ public class CalenderBuilderContainer{
 				
 				int timme = minutTid/60;
 				int minut = minutTid - (60*timme);
-				markeradTidStart = new TidPunkt(timme, minut);
+				markedTimeStart = new TidPunkt(timme, minut);
 //				markerade.add(t);
 //				t.setFill(Color.ORANGE);
-				if(markeradTidSlut != null && markeradTidStart !=null)
-					färgaMinuter(markeradTidStart, markeradTidSlut, Color.ORANGE, bakrundOrange );
-				else if(markeradTidStart != null){
-					färgaMinuter(markeradTidStart, markeradTidStart, Color.ORANGE,bakrundOrange );
+				if(markedTimeEnd != null && markedTimeStart !=null)
+					colorMinutes(markedTimeStart, markedTimeEnd, Color.ORANGE, bakrundOrange );
+				else if(markedTimeStart != null){
+					colorMinutes(markedTimeStart, markedTimeStart, Color.ORANGE,bakrundOrange );
 				}
 
 				Dragboard db = t.startDragAndDrop(TransferMode.ANY);
@@ -619,10 +619,10 @@ public class CalenderBuilderContainer{
 //				markeradTidSlut = markeradTidSlutsak;
 				
 				setMarkeradSlutTid(t);
-				if(markeradTidSlut != null && markeradTidStart !=null)
-					färgaMinuter(markeradTidStart, markeradTidSlut, Color.ORANGE, bakrundOrange );
-				else if(markeradTidStart != null){
-					färgaMinuter(markeradTidStart, markeradTidStart, Color.ORANGE,bakrundOrange );
+				if(markedTimeEnd != null && markedTimeStart !=null)
+					colorMinutes(markedTimeStart, markedTimeEnd, Color.ORANGE, bakrundOrange );
+				else if(markedTimeStart != null){
+					colorMinutes(markedTimeStart, markedTimeStart, Color.ORANGE,bakrundOrange );
 				}
 				
 //				((Text)t).setFill(Color.ORANGE);
@@ -663,10 +663,10 @@ public class CalenderBuilderContainer{
 				TidPunkt markeradTidSlut = new TidPunkt(timme, minut);
 //				färgaMinuter(markeradTidStart,markeradTidSlut,Color.ORANGE,Color.ORANGE);
 				setMarkeradSlutTid(t);
-				if(markeradTidSlut != null && markeradTidStart !=null)
-					färgaMinuter(markeradTidStart, markeradTidSlut, Color.ORANGE, bakrundOrange );
-				else if(markeradTidStart != null){
-					färgaMinuter(markeradTidStart, markeradTidStart, Color.ORANGE,bakrundOrange );
+				if(markeradTidSlut != null && markedTimeStart !=null)
+					colorMinutes(markedTimeStart, markeradTidSlut, Color.ORANGE, bakrundOrange );
+				else if(markedTimeStart != null){
+					colorMinutes(markedTimeStart, markedTimeStart, Color.ORANGE,bakrundOrange );
 				}
 //				/* the drag-and-drop gesture entered the target */
 //				/* show to the user that it is an actual gesture target */
@@ -694,8 +694,8 @@ public class CalenderBuilderContainer{
 				int timme = minutTid/60;
 				int minut = minutTid - (60*timme);
 				TidPunkt markeradTidSlutsak = new TidPunkt(timme, minut);
-				markeradTidSlut = markeradTidSlutsak;
-				färgaMinuter(markeradTidStart,markeradTidSlutsak,Color.GREEN, bakrundGren);
+				markedTimeEnd = markeradTidSlutsak;
+				colorMinutes(markedTimeStart,markeradTidSlutsak,Color.GREEN, bakrundGren);
 				Dragboard db = event.getDragboard();
 				event.setDropCompleted(true);
 //				/* data dropped */
@@ -723,10 +723,10 @@ public class CalenderBuilderContainer{
 //				allaMinuter.forEach(sak -> sak.setFill(Color.BLACK));
 				if(dropped == false){
 					setMarkeradSlutTid(t);
-					if(markeradTidSlut != null && markeradTidStart !=null)
-						färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
-					else if(markeradTidStart != null){
-						färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,bakrundWhite);
+					if(markedTimeEnd != null && markedTimeStart !=null)
+						colorMinutes(markedTimeStart, markedTimeEnd, Color.BLACK, bakrundWhite);
+					else if(markedTimeStart != null){
+						colorMinutes(markedTimeStart, markedTimeStart, Color.BLACK,bakrundWhite);
 					}
 					harLämnat = true;
 					
@@ -736,7 +736,7 @@ public class CalenderBuilderContainer{
 						int timme = minutTid/60;
 						int minut = minutTid - (60*timme);
 						TidPunkt markeradTidSlut = new TidPunkt(timme, minut);
-						färgaMinuter(markeradTidStart,markeradTidSlut,Color.BLACK, bakrundWhite);
+						colorMinutes(markedTimeStart,markeradTidSlut,Color.BLACK, bakrundWhite);
 					}	
 					event.consume();
 				}
@@ -752,12 +752,12 @@ public class CalenderBuilderContainer{
 		int timme = minutTid/60;
 		int minut = minutTid - (60*timme);
 		TidPunkt markeradTidSlutsak = new TidPunkt(timme, minut);
-		markeradTidSlut = markeradTidSlutsak;
+		markedTimeEnd = markeradTidSlutsak;
 	}
 	private void färgaMinuter(TidPunkt markeradTidStart, TidPunkt markeradTidSlut, Color färgText, Color färgAnnat) {
-		färgaMinuter(markeradTidStart, markeradTidSlut, färgText, new Background(new BackgroundFill(färgAnnat, CornerRadii.EMPTY, Insets.EMPTY)));
+		colorMinutes(markeradTidStart, markeradTidSlut, färgText, new Background(new BackgroundFill(färgAnnat, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
-	private void färgaMinuter(TidPunkt markeradTidStart, TidPunkt markeradTidSlut, Color färgText, Background barkundsfärg) {
+	private void colorMinutes(TidPunkt markeradTidStart, TidPunkt markeradTidSlut, Color färgText, Background barkundsfärg) {
 		
 		System.out.println("anropet kommer");
 		// ändrar plattsen på dem så de i "programet" "ser ut att vara markerade
@@ -829,8 +829,8 @@ public class CalenderBuilderContainer{
 		Predicate<CalenderEvent> calenderEventPredict = p-> p.getId() == calenderEvent.getId();
 		TidPunkt sparadStartMarkerad = null;
 		TidPunkt sparadSlutMarkerad = null;
-		sparadSlutMarkerad = markeradTidSlut;
-		sparadStartMarkerad = markeradTidStart;
+		sparadSlutMarkerad = markedTimeEnd;
+		sparadStartMarkerad = markedTimeStart;
 		
 		if(allEvents.removeIf(calenderEventPredict)){
 			svar = true;
@@ -849,12 +849,12 @@ public class CalenderBuilderContainer{
 		for(CalenderEvent ev : allEvents)
 			addEvent(ev);
 
-		markeradTidStart = sparadStartMarkerad;
-		markeradTidSlut = sparadSlutMarkerad;
-		if(markeradTidSlut != null && markeradTidStart !=null)
-			färgaMinuter(markeradTidStart,markeradTidSlut,Color.GREEN, bakrundGren);
-		else if(markeradTidStart !=null)
-			färgaMinuter(markeradTidStart,markeradTidStart,Color.GREEN, bakrundGren);
+		markedTimeStart = sparadStartMarkerad;
+		markedTimeEnd = sparadSlutMarkerad;
+		if(markedTimeEnd != null && markedTimeStart !=null)
+			colorMinutes(markedTimeStart,markedTimeEnd,Color.GREEN, bakrundGren);
+		else if(markedTimeStart !=null)
+			colorMinutes(markedTimeStart,markedTimeStart,Color.GREEN, bakrundGren);
 		//		markeradeSparade.forEach(mp -> {
 //			allaMinuter.stream()
 //			.filter(am -> am.getId().equalsIgnoreCase(mp))
@@ -891,12 +891,12 @@ public class CalenderBuilderContainer{
 
 	public TidPunkt[] getMarkedMinutes() {
 		TidPunkt[] ret = new TidPunkt[2];
-		if(markeradTidSlut != null && markeradTidStart !=null){
-			ret[0] = markeradTidStart;
-			ret[1] = markeradTidSlut;
-		}else if(markeradTidStart !=null){
-			ret[0] = markeradTidStart;
-			ret[1] = markeradTidStart;
+		if(markedTimeEnd != null && markedTimeStart !=null){
+			ret[0] = markedTimeStart;
+			ret[1] = markedTimeEnd;
+		}else if(markedTimeStart !=null){
+			ret[0] = markedTimeStart;
+			ret[1] = markedTimeStart;
 		}
 		
 		return ret;
@@ -915,30 +915,30 @@ public class CalenderBuilderContainer{
 	}
 
 	public void setMarkedTime(TidPunkt startTime, TidPunkt endTime) {
-		if(markeradTidSlut != null && markeradTidStart !=null)
-			färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
-		else if(markeradTidStart != null){
-			färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,bakrundWhite);
+		if(markedTimeEnd != null && markedTimeStart !=null)
+			colorMinutes(markedTimeStart, markedTimeEnd, Color.BLACK, bakrundWhite);
+		else if(markedTimeStart != null){
+			colorMinutes(markedTimeStart, markedTimeStart, Color.BLACK,bakrundWhite);
 		}
-		markeradTidSlut = endTime;
-		markeradTidStart = startTime;
+		markedTimeEnd = endTime;
+		markedTimeStart = startTime;
 		
-		if (markeradTidSlut != null && markeradTidStart != null) {
-			färgaMinuter(markeradTidStart, markeradTidSlut, Color.GREEN,bakrundGren);
-		} else if (markeradTidStart != null) {
-			färgaMinuter(markeradTidStart, markeradTidStart, Color.GREEN,bakrundGren);
+		if (markedTimeEnd != null && markedTimeStart != null) {
+			colorMinutes(markedTimeStart, markedTimeEnd, Color.GREEN,bakrundGren);
+		} else if (markedTimeStart != null) {
+			colorMinutes(markedTimeStart, markedTimeStart, Color.GREEN,bakrundGren);
 		}
 		
 	}
 
 	public void clearSelectedTime() {
-		if(markeradTidSlut != null && markeradTidStart !=null)
-			färgaMinuter(markeradTidStart, markeradTidSlut, Color.BLACK, bakrundWhite);
-		else if(markeradTidStart != null){
-			färgaMinuter(markeradTidStart, markeradTidStart, Color.BLACK,bakrundWhite);
+		if(markedTimeEnd != null && markedTimeStart !=null)
+			colorMinutes(markedTimeStart, markedTimeEnd, Color.BLACK, bakrundWhite);
+		else if(markedTimeStart != null){
+			colorMinutes(markedTimeStart, markedTimeStart, Color.BLACK,bakrundWhite);
 		}
-		markeradTidSlut = null;
-		markeradTidStart = null;
+		markedTimeEnd = null;
+		markedTimeStart = null;
 		
 	}
 
