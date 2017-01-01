@@ -16,7 +16,7 @@ Some coming features:
 
 
 ## How to ouse
-Add the Jar file to youre prodjekt or compile the classes:
+Add the [Jar](https://github.com/flaime/DayViewJavaFX/releases) file to youre prodjekt or compile the classes:
 ```
 /DayViewJavaFX/src/dayGrapics/CalenderBuilderContainer.java
 /DayViewJavaFX/src/dayGrapics/CalenderEvent.java
