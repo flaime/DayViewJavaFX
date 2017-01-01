@@ -7,10 +7,11 @@ It can display an day calendar in minute, hour and day view whit the abilities t
 
 Some coming features:
 * Easy mount event listener
-* Update the event ui to a bitt more "fancy"
+* Update the event ui to a bitt more "fancy" (som parts don)
 * Make it possible to "on the go" change the layout day/hour/minute...
-* Easier auto update of values like body text, time....
-* Make it possibly to dynamic change the minute size (low priority for the moment) 
+* **done** Easier auto update of values like body text, time....
+* Make it possibly to dynamic change the minute size (low priority for the moment)
+* Rewrite the whole or solve the "bugs" that makes it extremely slow (**priority**)
 
 
 ## How to ouse
