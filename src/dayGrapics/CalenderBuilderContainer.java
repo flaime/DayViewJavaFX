@@ -53,8 +53,8 @@ public class CalenderBuilderContainer{
 	@FXML
 	private GridPane gridPane;
 
-	public enum Vy {
-		timmVy, minutVy, dagVy
+	public enum view {
+		hourView, minuteView, dayView
 	}
 	
 	
@@ -62,20 +62,20 @@ public class CalenderBuilderContainer{
  * är som standard minut vy men ändras här till antingen minut, timme eller dags vy	
  * @param vy
  */
-	private void setVy(Vy vy){
+	private void setView(view vy){
 		vyn = vy;
 	}
 	private ArrayList<ArrayList<CalenderEvent>> calenderHändelser = new ArrayList<>();
 	
 //	private Vy vyn = Vy.minutVy;
 //	Vy vyn = Vy.timmVy;
-	private Vy vyn = Vy.dagVy;
+	private view vyn = view.dayView;
 	
 	private double minutHöjd = -1;
 	
 	private ArrayList<Node> allaMarkeringar = new ArrayList<>();//allaMarkeringar
 	
-	public CalenderBuilderContainer(GridPane grid, Vy vyn) {
+	public CalenderBuilderContainer(GridPane grid, view vyn) {
 		this.vyn = vyn;
 		gridPane = grid;
 		
@@ -141,13 +141,13 @@ public class CalenderBuilderContainer{
 					
 					int heightInMinutes = -1;
 					switch (vyn) {
-					case minutVy:
+					case minuteView:
 						heightInMinutes = (int) Math.ceil(t.getLayoutBounds().getHeight()/minutVyMinutHeight);
 						break;
-					case timmVy:
+					case hourView:
 						heightInMinutes = (int) Math.ceil(t.getLayoutBounds().getHeight()/timVyMinutHeight);
 						break;
-					case dagVy:
+					case dayView:
 						heightInMinutes = (int) Math.ceil(t.getLayoutBounds().getHeight()/dagVyMinutHeight);
 						break;
 					default:
@@ -166,7 +166,7 @@ public class CalenderBuilderContainer{
 			    	minutPane.setBackground(bakrundWhite);
 			    gridPane.add(minutPane,3,i);
 			    
-				if (vyn == Vy.minutVy) {
+				if (vyn == view.minuteView) {
 					Text t = new Text();
 					t.setText(fixaTillMinuter(minut++));
 					t.setFont(minutVyFont);
@@ -178,7 +178,7 @@ public class CalenderBuilderContainer{
 				    
 					gridPane.add(t, 2, i);
 					
-				}else if(vyn == Vy.timmVy){
+				}else if(vyn == view.hourView){
 					Text t = new Text();
 					t.setText(fixaTillMinuter(minut++));
 					t.setFont(Font.font("Verdana", 12));
@@ -195,7 +195,7 @@ public class CalenderBuilderContainer{
 						gridPane.add(p, 2, i);
 					}
 					minutHöjd = Math.ceil(timVyMinutHeight);
-				}else if(vyn == Vy.dagVy){
+				}else if(vyn == view.dayView){
 					Text t = new Text();
 					t.setText(fixaTillMinuter(minut++));
 					t.setFont(Font.font("Verdana", 12));
