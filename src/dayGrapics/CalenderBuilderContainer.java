@@ -225,6 +225,30 @@ public class CalenderBuilderContainer{
 			return sb.append(minut).toString();//minut+"";
 	}
 	
+	/**
+	 * Is fasther when adding evnets therfor som things can be done one time insted of for eatch time editing an event.
+	 * @param events
+	 */
+	public void addAllEvent(ArrayList<CalenderEvent> events){
+		if(events !=null){
+			for(CalenderEvent event : events){
+				//lite fakta om var den ska sitta någonstans
+				event.addRefrense(this);
+				int startRuta = getStartrutaFörEvent(event);
+				int slutRuta = getSlutrutaFörEvent(event);
+				int antalRuterTillSlut = slutRuta - startRuta;
+				double maxTillåtnaHeight = maxTillåtanaHöjdPåEvent(event);
+				
+				int nivå = vilkenNivåSkaEvnetLäggasPå(event);
+				tittaOmNivåFinnsOmInteLäggTill(nivå);
+				calenderHändelser.get(nivå).add(event);//för  att kunna tillta var de finns till senare och ta ut hämta ut händelser
+				Node ret = createCalenderEvent(event, maxTillåtnaHeight);
+				gridPane.add(ret, 3+nivå, startRuta, 1, antalRuterTillSlut);
+			}
+			fixaTillbkakaIckaKrokande();
+			fixaAllaIckeKrokande();
+		}
+	}
 	
 	public boolean addEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy, boolean scrollbar){
 		CalenderEvent event = new CalenderEvent(från, till, rubrik, boddy, scrollbar);
@@ -253,7 +277,9 @@ public class CalenderBuilderContainer{
 
 		fixaTillbkakaIckaKrokande();
 		fixaAllaIckeKrokande();
-		return true;
+		if(event != null)
+			return true;
+		else return false;
 	}
 	
 	private ArrayList<CalenderEvent> allaFixadeUtdragna = new ArrayList<>();
@@ -816,8 +842,9 @@ public class CalenderBuilderContainer{
 		repaintAll();
 		System.out.println("tid för repaint = " + (System.currentTimeMillis() - time));
 		time = System.currentTimeMillis();
-		for(CalenderEvent ev : allEvents)
-			addEvent(ev);
+		addAllEvent(allEvents);
+//		for(CalenderEvent ev : allEvents)
+//			addEvent(ev);
 
 		markedTimeStart = sparadStartMarkerad;
 		markedTimeEnd = sparadSlutMarkerad;
