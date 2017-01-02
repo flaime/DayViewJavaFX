@@ -250,11 +250,11 @@ public class CalenderBuilderContainer{
 		}
 	}
 	
-	public boolean addEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy, boolean scrollbar){
+	public boolean addEvent(Time från, Time till, String rubrik, String boddy, boolean scrollbar){
 		CalenderEvent event = new CalenderEvent(från, till, rubrik, boddy, scrollbar);
 		return addEvent(event);
 	}
-	public boolean addEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy) {
+	public boolean addEvent(Time från, Time till, String rubrik, String boddy) {
 		CalenderEvent event = new CalenderEvent(från, till, rubrik, boddy);
 		return addEvent(event);
 	}
@@ -344,14 +344,14 @@ public class CalenderBuilderContainer{
 	}
 
 	private int getSlutrutaFörEvent(CalenderEvent event) {
-		int slutRuta = event.getTill().getTimme()*60;
-		slutRuta += event.getTill().getMinut();
+		int slutRuta = event.getTo().getHour()*60;
+		slutRuta += event.getTo().getMinut();
 		return slutRuta;
 	}
 
 	private int getStartrutaFörEvent(CalenderEvent event) {
-		int startRuta = event.getFrån().getTimme()*60;
-		startRuta += event.getFrån().getMinut();
+		int startRuta = event.getFrom().getHour()*60;
+		startRuta += event.getFrom().getMinut();
 		return startRuta;
 	}
 	
@@ -363,9 +363,9 @@ public class CalenderBuilderContainer{
 	private ScrollPane createCalenderEvent(CalenderEvent event,double height){ //String rubriken, String boddy, double height){
 		
 		Text tid = new Text();
-		tid.textProperty().bind(event.getFrånTillObservably());//Bindings.createStringBinding(() -> event.getFrånTillObservably()+ " "+event.getRubrik()));//Bindings.concat(event.getFrånTillObservably(), " ",event.getRubrik())); //setText(event.getFrån() + "-" + event.getTill() + "\t" +event.getRubrik());
+		tid.textProperty().bind(event.getfromToObservably());//Bindings.createStringBinding(() -> event.getfromToObservably()+ " "+event.getRubrik()));//Bindings.concat(event.getfromToObservably(), " ",event.getRubrik())); //setText(event.getfrom() + "-" + event.getTo() + "\t" +event.getRubrik());
 		Text rubrik = new Text();
-		rubrik.textProperty().bind(event.getRubrikObservably());//Bindings.createStringBinding(() -> event.getFrånTillObservably()+ " "+event.getRubrik()));//Bindings.concat(event.getFrånTillObservably(), " ",event.getRubrik())); //setText(event.getFrån() + "-" + event.getTill() + "\t" +event.getRubrik());
+		rubrik.textProperty().bind(event.getheadingObservably());//Bindings.createStringBinding(() -> event.getfromToObservably()+ " "+event.getRubrik()));//Bindings.concat(event.getfromToObservably(), " ",event.getRubrik())); //setText(event.getfrom() + "-" + event.getTo() + "\t" +event.getRubrik());
 		HBox toppDel = new HBox(tid,new Text(" "),rubrik);
 		StackPane rubrikPane = new StackPane(toppDel);//rubrik);
 		if(event.getColorHeading() == null)
@@ -417,7 +417,7 @@ public class CalenderBuilderContainer{
 	             
 	        	  Alert alert = new Alert(AlertType.INFORMATION);
 	        	  alert.setTitle("Calender händelse");
-	        	  alert.setHeaderText(event.getFrån() + "-" + event.getTill() + " " +event.getRubrik());
+	        	  alert.setHeaderText(event.getFrom() + "-" + event.getTo() + " " +event.getHeading());
 	        	  alert.setContentText("bodyn:\n" +event.getBoddy());
 
 	        	  alert.showAndWait();
@@ -513,17 +513,17 @@ public class CalenderBuilderContainer{
 	
 	
 	public static boolean overlapping(CalenderEvent a, CalenderEvent b){ //överlapparDessa
-		int aStart = (a.getFrån().getTimme()* 100) + a.getFrån().getMinut();
-		int aSlut = (a.getTill().getTimme()* 100) + a.getTill().getMinut();
+		int aStart = (a.getFrom().getHour()* 100) + a.getFrom().getMinut();
+		int aSlut = (a.getTo().getHour()* 100) + a.getTo().getMinut();
 
-		int bStart = (b.getFrån().getTimme()* 100) + b.getFrån().getMinut();
-		int bSlut = (b.getTill().getTimme()* 100) + b.getTill().getMinut();
+		int bStart = (b.getFrom().getHour()* 100) + b.getFrom().getMinut();
+		int bSlut = (b.getTo().getHour()* 100) + b.getTo().getMinut();
 		
 		return (aStart < bSlut && bStart < aSlut);
 	}
 	
-	private TidPunkt markedTimeStart = null;
-	private TidPunkt markedTimeEnd = null;
+	private Time markedTimeStart = null;
+	private Time markedTimeEnd = null;
 //	private ArrayList<Text> markerade = new ArrayList<>();
 	private boolean harLämnat = false;
 	private boolean dropped = true;
@@ -554,7 +554,7 @@ public class CalenderBuilderContainer{
 			int minutTid = gridPane.getRowIndex(t);
 			int timmeTimme = minutTid / 60;
 			int minutMinut = minutTid - (60 * timmeTimme);
-			markedTimeStart = new TidPunkt(timmeTimme, minutMinut);
+			markedTimeStart = new Time(timmeTimme, minutMinut);
 			markedTimeEnd = null;
 //			markerade.clear();
 //			markerade.add(t);
@@ -591,7 +591,7 @@ public class CalenderBuilderContainer{
 				
 				int timme = minutTid/60;
 				int minut = minutTid - (60*timme);
-				markedTimeStart = new TidPunkt(timme, minut);
+				markedTimeStart = new Time(timme, minut);
 //				markerade.add(t);
 //				t.setFill(Color.ORANGE);
 				if(markedTimeEnd != null && markedTimeStart !=null)
@@ -662,7 +662,7 @@ public class CalenderBuilderContainer{
 				
 				int timme = minutTid/60;
 				int minut = minutTid - (60*timme);
-				TidPunkt markeradTidSlut = new TidPunkt(timme, minut);
+				Time markeradTidSlut = new Time(timme, minut);
 //				färgaMinuter(markeradTidStart,markeradTidSlut,Color.ORANGE,Color.ORANGE);
 				setMarkeradSlutTid(t);
 				if(markeradTidSlut != null && markedTimeStart !=null)
@@ -695,7 +695,7 @@ public class CalenderBuilderContainer{
 				
 				int timme = minutTid/60;
 				int minut = minutTid - (60*timme);
-				TidPunkt markeradTidSlutsak = new TidPunkt(timme, minut);
+				Time markeradTidSlutsak = new Time(timme, minut);
 				markedTimeEnd = markeradTidSlutsak;
 				colorMinutes(markedTimeStart,markeradTidSlutsak,Color.GREEN, bakrundGren);
 				Dragboard db = event.getDragboard();
@@ -737,7 +737,7 @@ public class CalenderBuilderContainer{
 						
 						int timme = minutTid/60;
 						int minut = minutTid - (60*timme);
-						TidPunkt markeradTidSlut = new TidPunkt(timme, minut);
+						Time markeradTidSlut = new Time(timme, minut);
 						colorMinutes(markedTimeStart,markeradTidSlut,Color.BLACK, bakrundWhite);
 					}	
 					event.consume();
@@ -753,26 +753,26 @@ public class CalenderBuilderContainer{
 		
 		int timme = minutTid/60;
 		int minut = minutTid - (60*timme);
-		TidPunkt markeradTidSlutsak = new TidPunkt(timme, minut);
+		Time markeradTidSlutsak = new Time(timme, minut);
 		markedTimeEnd = markeradTidSlutsak;
 	}
-	private void färgaMinuter(TidPunkt markeradTidStart, TidPunkt markeradTidSlut, Color färgText, Color colorOther) {
+	private void färgaMinuter(Time markeradTidStart, Time markeradTidSlut, Color färgText, Color colorOther) {
 		colorMinutes(markeradTidStart, markeradTidSlut, färgText, new Background(new BackgroundFill(colorOther, CornerRadii.EMPTY, Insets.EMPTY)));
 	}
-	private void colorMinutes(TidPunkt markedTimeStart, TidPunkt markedTimeEnd, Color colorText, Background colorOther) {
+	private void colorMinutes(Time markedTimeStart, Time markedTimeEnd, Color colorText, Background colorOther) {
 		
 		System.out.println("The call is comming");
 		// ändrar plattsen på dem så de i "programet" "ser ut att vara markerade
 		// i rätt årnind" då detta ine påvekar funktionalitet men under lättar
 		// följande kod
-		if (markedTimeEnd.getTimme() * 100 + markedTimeEnd.getMinut() < markedTimeStart.getTimme() * 100
+		if (markedTimeEnd.getHour() * 100 + markedTimeEnd.getMinut() < markedTimeStart.getHour() * 100
 				+ markedTimeStart.getMinut()) {
-			TidPunkt temp = markedTimeEnd;
+			Time temp = markedTimeEnd;
 			markedTimeEnd = markedTimeStart;
 			markedTimeStart = temp;
 		}
-		int startBothTogether = markedTimeStart.getTimme() * 100 + markedTimeStart.getMinut();
-		int endBothTogether = markedTimeEnd.getTimme() * 100 + markedTimeEnd.getMinut();
+		int startBothTogether = markedTimeStart.getHour() * 100 + markedTimeStart.getMinut();
+		int endBothTogether = markedTimeEnd.getHour() * 100 + markedTimeEnd.getMinut();
 		System.out.println("Befor filter");
 		gridPane.getChildren().stream()//parallelStream()
 			.filter(x-> x.getId()!=null)
@@ -823,8 +823,8 @@ public class CalenderBuilderContainer{
 		
 		ArrayList<CalenderEvent> allEvents = getAllEvent();
 		Predicate<CalenderEvent> calenderEventPredict = p-> p.getId() == calenderEvent.getId();
-		TidPunkt sparadStartMarkerad = null;
-		TidPunkt sparadSlutMarkerad = null;
+		Time sparadStartMarkerad = null;
+		Time sparadSlutMarkerad = null;
 		sparadSlutMarkerad = markedTimeEnd;
 		sparadStartMarkerad = markedTimeStart;
 		
@@ -885,8 +885,8 @@ public class CalenderBuilderContainer{
 //		markerade.clear();
 	}
 
-	public TidPunkt[] getMarkedMinutes() {
-		TidPunkt[] ret = new TidPunkt[2];
+	public Time[] getMarkedMinutes() {
+		Time[] ret = new Time[2];
 		if(markedTimeEnd != null && markedTimeStart !=null){
 			ret[0] = markedTimeStart;
 			ret[1] = markedTimeEnd;
@@ -898,19 +898,19 @@ public class CalenderBuilderContainer{
 		return ret;
 	}
 
-	private TidPunkt getTidpunkFromText(String text) {
+	private Time getTidpunkFromText(String text) {
 		String[] tal = text.split(":");
 		if(tal.length !=2)
 			return null;
 		try {
-			return new TidPunkt(Integer.parseInt(tal[0]), Integer.parseInt(tal[1]));
+			return new Time(Integer.parseInt(tal[0]), Integer.parseInt(tal[1]));
 		} catch (NumberFormatException e) {
 			return null;
 		}
 		
 	}
 
-	public void setMarkedTime(TidPunkt startTime, TidPunkt endTime) {
+	public void setMarkedTime(Time startTime, Time endTime) {
 		if(markedTimeEnd != null && markedTimeStart !=null)
 			colorMinutes(markedTimeStart, markedTimeEnd, Color.BLACK, bakrundWhite);
 		else if(markedTimeStart != null){

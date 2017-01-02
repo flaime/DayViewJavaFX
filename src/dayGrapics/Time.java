@@ -2,17 +2,17 @@ package dayGrapics;
 
 import javafx.beans.property.SimpleStringProperty;
 
-public class TidPunkt {
+public class Time {
 	private int minut;
-	private int timme;
+	private int hour;
 	private SimpleStringProperty tiden = new SimpleStringProperty();
-	public TidPunkt(int timme, int minut) {
-		this.timme = timme;
+	public Time(int hour, int minut) {
+		this.hour = hour;
 		this.minut = minut;
-		tiden.setValue(formaterarTimmeOchMinut(timme)+":"+formaterarTimmeOchMinut(minut));
+		tiden.setValue(formaterarTimmeOchMinut(hour)+":"+formaterarTimmeOchMinut(minut));
 	}
-	public int getTimme() {
-		return timme;
+	public int getHour() {
+		return hour;
 	}
 	
 	public int getMinut() {
@@ -23,7 +23,7 @@ public class TidPunkt {
 	}
 	@Override
 	public String toString() {
-		return formaterarTimmeOchMinut(timme)+":"+formaterarTimmeOchMinut(minut);
+		return formaterarTimmeOchMinut(hour)+":"+formaterarTimmeOchMinut(minut);
 	}
 	
 	private String formaterarTimmeOchMinut(int minut){
@@ -42,8 +42,8 @@ public class TidPunkt {
 	public boolean equals(Object obj) {
 		if(obj == null)
 			return false;
-		else if(obj instanceof TidPunkt){
-			if(((TidPunkt)obj).getMinut() == getMinut() && ((TidPunkt)obj).getTimme()==getTimme())
+		else if(obj instanceof Time){
+			if(((Time)obj).getMinut() == getMinut() && ((Time)obj).getHour()==getHour())
 				return true;
 		}
 		

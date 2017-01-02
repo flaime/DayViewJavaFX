@@ -11,60 +11,60 @@ import javafx.scene.paint.Paint;
 
 public class CalenderEvent {
 
-	private TidPunkt från;
-	private TidPunkt till;
-	private SimpleStringProperty rubrik = new SimpleStringProperty();
+	private Time from;
+	private Time to;
+	private SimpleStringProperty heading = new SimpleStringProperty();
 	private SimpleStringProperty boddy = new SimpleStringProperty();
 	private boolean scrollEnabled = false;
 	private static int nextId = 1;
 	private final int dennasId;
-	private SimpleStringProperty FrånTillObservably = new SimpleStringProperty();
+	private SimpleStringProperty fromtoObservably = new SimpleStringProperty();
 	private ArrayList<CalenderBuilderContainer> uppdateTimeLinks = new ArrayList<>();
 	private Color colorBody = null;
 	private Color colorRibrik = null;
 	
-	public CalenderEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy,Color boddyColor, Color rubrikColor) {
-		this(från, till, rubrik, boddy);
+	public CalenderEvent(Time from, Time to, String heading, String boddy,Color boddyColor, Color headingColor) {
+		this(from, to, heading, boddy);
 		colorBody = boddyColor;
-		colorRibrik = rubrikColor;
+		colorRibrik = headingColor;
 	}
-	public CalenderEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy, boolean scrollEnabled,Color boddyColor, Color rubrikColor) {
-		this(från, till, rubrik, boddy, scrollEnabled);
+	public CalenderEvent(Time from, Time to, String heading, String boddy, boolean scrollEnabled,Color boddyColor, Color headingColor) {
+		this(from, to, heading, boddy, scrollEnabled);
 		colorBody = boddyColor;
-		colorRibrik = rubrikColor;
+		colorRibrik = headingColor;
 	}
-	public CalenderEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy, boolean scrollEnabled) {
+	public CalenderEvent(Time from, Time to, String heading, String boddy, boolean scrollEnabled) {
 		this.boddy.setValue(boddy);
-		this.rubrik.setValue(rubrik);
-		this.från = från;
-		this.till = till;
+		this.heading.setValue(heading);
+		this.from = from;
+		this.to = to;
 		this.scrollEnabled = scrollEnabled;
-		FrånTillObservably.set(getFrån()+"-"+getTill());
-//		FrånTillObservably.bind(Bindings.concat(från.gettidenBinding(), "-",till.gettidenBinding()));// från.gettidenBinding(),till.gettidenBinding());// setValue(getFrån()+"-"+getTill());
+		fromtoObservably.set(getFrom()+"-"+getTo());
+//		fromtoObservably.bind(Bindings.concat(from.gettidenBinding(), "-",to.gettidenBinding()));// from.gettidenBinding(),to.gettidenBinding());// setValue(getfrom()+"-"+getto());
 		dennasId = nextId++;
 		
 	}
-	public CalenderEvent(TidPunkt från, TidPunkt till, String rubrik, String boddy) {
+	public CalenderEvent(Time from, Time to, String heading, String boddy) {
 		this.boddy.setValue(boddy);
-		this.rubrik.setValue(rubrik);
-		this.från = från;
-		this.till = till;
+		this.heading.setValue(heading);
+		this.from = from;
+		this.to = to;
 		dennasId = nextId++;
-		FrånTillObservably.set(getFrån()+"-"+getTill());
+		fromtoObservably.set(getFrom()+"-"+getTo());
 		
 	}
-	public TidPunkt getFrån() {
-		return från;
+	public Time getFrom() {
+		return from;
 	}
 
-	public void setNyTid(TidPunkt från,TidPunkt till) {
-		this.från = från;
-		this.till = till;
+	public void setNewTime(Time from,Time to) {
+		this.from = from;
+		this.to = to;
 		CalenderEvent denna = this;
 		Platform.runLater(new Runnable() {
 	        @Override
 	        public void run() {
-	        	FrånTillObservably.set(getFrån()+"-"+getTill());
+	        	fromtoObservably.set(getFrom()+"-"+getTo());
 	        	for(CalenderBuilderContainer b : uppdateTimeLinks)
 	        		b.uppdateCalenderEventTime(denna);
 	        }
@@ -72,13 +72,13 @@ public class CalenderEvent {
 		
 		
 	}
-	public void setFrån(TidPunkt från) {
-		this.från = från;
+	public void setFrom(Time from) {
+		this.from = from;
 		CalenderEvent denna = this;
 		Platform.runLater(new Runnable() {
 	        @Override
 	        public void run() {
-	        	FrånTillObservably.set(getFrån()+"-"+getTill());
+	        	fromtoObservably.set(getFrom()+"-"+getTo());
 	        	for(CalenderBuilderContainer b : uppdateTimeLinks)
 	        		b.uppdateCalenderEventTime(denna);
 	        }
@@ -86,16 +86,16 @@ public class CalenderEvent {
 		
 		
 	}
-	public TidPunkt getTill() {
-		return till;
+	public Time getTo() {
+		return to;
 	}
-	public void setTill(TidPunkt till) {
-		this.till = till;
+	public void setTo(Time to) {
+		this.to = to;
 		CalenderEvent denna = this;
 		Platform.runLater(new Runnable() {
 	        @Override
 	        public void run() {
-	        	FrånTillObservably.setValue(getFrån()+"-"+getTill());
+	        	fromtoObservably.setValue(getFrom()+"-"+getTo());
 	        	for(CalenderBuilderContainer b : uppdateTimeLinks)
 	        		b.uppdateCalenderEventTime(denna);
 	        }
@@ -103,11 +103,11 @@ public class CalenderEvent {
 		
 		uppdateTimeLinks.forEach(x-> x.uppdateCalenderEventTime(this));
 	}
-	public String getRubrik() {
-		return rubrik.getValue();
+	public String getHeading() {
+		return heading.getValue();
 	}
-	public void setRubrik(String rubrik) {
-		this.rubrik.setValue(rubrik);
+	public void setheading(String heading) {
+		this.heading.setValue(heading);
 	}
 	public String getBoddy() {
 		return boddy.getValue();
@@ -115,14 +115,14 @@ public class CalenderEvent {
 	public void setBoddy(String boddy) {
 		this.boddy.setValue(boddy);
 	}//medvetet satt utan modifierare på de nedan.....!
-	SimpleStringProperty getFrånTillObservably() {
-		return FrånTillObservably;
+	SimpleStringProperty getfromToObservably() {
+		return fromtoObservably;
 	}
 	SimpleStringProperty getBoddyObservably() {
 		return boddy;
 	}
-	SimpleStringProperty getRubrikObservably() {
-		return rubrik;
+	SimpleStringProperty getheadingObservably() {
+		return heading;
 	}
 	boolean addRefrense(CalenderBuilderContainer cbc){
 		return uppdateTimeLinks.add(cbc);
@@ -132,7 +132,7 @@ public class CalenderEvent {
 	}
 	@Override
 	public String toString() {
-		return "CalenderEvent [från=" + från + ", till=" + till + ", rubrik=" + rubrik + ", boddy=" + boddy + "]";
+		return "CalenderEvent [from=" + from + ", to=" + to + ", heading=" + heading + ", boddy=" + boddy + "]";
 	}
 	public int getId() {
 		return dennasId;
