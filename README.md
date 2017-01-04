@@ -11,7 +11,7 @@ Fetures (the bigest)
 * set multiple colors for event
 * mark time periods
 * programmatically set/get marked time
-* chek if time overlaps
+* chek if time overlap
 
 
 Some coming features:
@@ -21,7 +21,8 @@ Some coming features:
 * **done** Easier auto update of values like body text, time....
 * Make it possibly to dynamic change the minute size (low priority for the moment)
 * **mostly done** (maybe an rewrite sometime thug)Rewrite the whole or solve the "bugs" that makes it extremely slow (**priority**) not as slow
-* Change alla swedish to english at least the methods and "TidPunkt" class
+* **mostly don**Change alla swedish to english at least the methods and "TidPunkt" class
+* Add validation on corect time and so on...
 
 
 ## How to ouse
