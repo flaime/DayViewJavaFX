@@ -5,13 +5,22 @@ DayViewJavaFX is an project that aims to create an day view (calendar) that is l
 
 It can display an day calendar in minute, hour and day view whit the abilities to handle multiple events on the same time. It can also detect marking of minutes. 
 
+Fetures (the bigest)
+* easy add/remove element
+* easy change event (time, header, color and so on)
+* set multiple colors for event
+* mark time periods
+* programmatically set/get marked time
+* chek if time overlaps
+
+
 Some coming features:
 * Easy mount event listener
 * Update the event ui to a bitt more "fancy" (som parts don)
 * Make it possible to "on the go" change the layout day/hour/minute...
 * **done** Easier auto update of values like body text, time....
 * Make it possibly to dynamic change the minute size (low priority for the moment)
-* Rewrite the whole or solve the "bugs" that makes it extremely slow (**priority**)
+* **mostly done** (maybe an rewrite sometime thug)Rewrite the whole or solve the "bugs" that makes it extremely slow (**priority**) not as slow
 * Change alla swedish to english at least the methods and "TidPunkt" class
 
 
