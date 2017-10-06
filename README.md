@@ -15,14 +15,14 @@ Fetures (the bigest)
 
 
 Some coming features:
-* Easy mount event listener
-* Update the event ui to a bitt more "fancy" (som parts don)
-* Make it possible to "on the go" change the layout day/hour/minute...
-* **done** Easier auto update of values like body text, time....
-* Make it possibly to dynamic change the minute size (low priority for the moment)
-* **mostly done** (maybe an rewrite sometime thug)Rewrite the whole or solve the "bugs" that makes it extremely slow (**priority**) not as slow
-* **mostly don**Change alla swedish to english at least the methods and "TidPunkt" class
-* Add validation on corect time and so on...
+- [ ] Easy mount event listener
+- [ ] Update the event ui to a bitt more "fancy" (som parts don)
+- [ ] Make it possible to "on the go" change the layout day/hour/minute...
+- [x] **done** Easier auto update of values like body text, time....
+- [ ] Make it possibly to dynamic change the minute size (low priority for the moment)
+- [x] **mostly done** (maybe an rewrite sometime thug)Rewrite the whole or solve the "bugs" that makes it extremely slow (**priority**) not as slow
+- [ ] **mostly don**Change alla swedish to english at least the methods and "TidPunkt" class
+- [ ] Add validation on corect time and so on...
 
 
 ## How to ouse
@@ -48,6 +48,7 @@ And by that we have been creating a calendar with one calendar event that is bet
 
 #### Example how it can look for the minute view:
 <img src="https://github.com/flaime/DayViewJavaFX/blob/master/readmeFiles/dayView.PNG" width="300">
+
 #### Example how it can look for the hour view:
 <img src="https://github.com/flaime/DayViewJavaFX/blob/master/readmeFiles/dayView%20timmar.PNG" width="300">
 #### Example how it can look for the day view:
